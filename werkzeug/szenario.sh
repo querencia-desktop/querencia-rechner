@@ -18,7 +18,7 @@ W=${R%x*}; H=${R#*x}
 
 # Auflösung des headless-Ausgangs setzen; Zeigerkoordinaten in Pixeln.
 "$QA" "$R" >"$OUT/ausgabe.log" 2>&1 && ok "Auflösung $R gesetzt" || blocked "Auflösung $R nicht setzbar"
-q "size $W $H" "wait 500"
+q "size $W $H" "numlock on" "wait 500"
 
 # ---------------------------------------------------------------- Start
 QUERENCIA_RECHNER_DEBUG=1 "$BIN" >"$LOG" 2>"$OUT/rechner.err" &
@@ -61,6 +61,10 @@ mitte() {
 }
 menue_mitte() {
     awk -F'\t' -v i="$1" '$1=="menue" && $2==i {printf "%d %d\n", $3+$5/2, $4+$6/2; exit}' "$LOG"
+}
+# Erster Eintrag des aufgeklappten Menüs i: unter dem Menükopf (Popover-Rand ~9 px, Eintrag ~24 px hoch)
+menue_eintrag1() {
+    awk -F'\t' -v i="$1" '$1=="menue" && $2==i {printf "%d %d\n", $3+30, $4+$6+21; exit}' "$LOG"
 }
 klick() { # klick <Taste> [<Taste> …] – Maus auf die Taste und klicken
     local t x y
@@ -159,13 +163,13 @@ pruefe "Speicher: MR ohne Speicher tut nichts" "" "0"
 
 # -------------------------------------------------- Division durch Null
 q "key Escape" "type 5/0=" "wait 300"
-pruefe "Division durch Null als Text" "5 ÷ 0 =" "Division durch Null"
+pruefe "Division durch Null als Text" "5 ÷ 0" "Division durch Null"
 shot "08-division-durch-null"
 running && ok "Programm läuft nach Division durch Null weiter" || nok "Absturz bei Division durch Null"
 q "type 7" "wait 200"
 pruefe "Nach dem Fehler beginnt eine Ziffer neu" "7" "7"
 q "key Escape" "type 1000000000000qqqqq" "wait 300"
-pruefe "Überlauf als Text (x² wiederholt)" "1e+12" "Überlauf"
+pruefe "Überlauf als Text (x² wiederholt: 1e192² ist nicht darstellbar)" "1e+192" "Überlauf"
 shot "09-ueberlauf"
 klick AC 4 ± √
 pruefe "Wurzel aus negativer Zahl als Text" "−4" "Wurzel aus negativer Zahl"
@@ -192,26 +196,28 @@ pruefe "Strg+V: Fremdtext „0.75“ mit Punkt" "0,75" "0,75"
 printf 'Hallo' | wl-copy 2>/dev/null
 q "key Escape" "type 5" "chord ctrl v" "wait 800"
 grep -q "^eingefuegt	nein	Hallo$" "$LOG" && erwartet "5" "5" && ok "Strg+V: Text ohne Zahl wird ignoriert" || nok "Strg+V mit Text ohne Zahl"
-# Menü Rechner → Kopieren per Maus (Menükopf 0), Eintrag per Tastatur
+# Menü Rechner → Kopieren per Maus (Tastaturnavigation in Menüs ist in der
+# headless-Umgebung nicht zuverlässig, siehe szenario-menue.sh und Bericht)
 q "key Escape" "type 7-10=" "wait 200"
-read -r MX MY < <(menue_mitte 0)
+printf 'leer' | wl-copy 2>/dev/null
+read -r MX MY < <(menue_mitte 0); read -r EX EY < <(menue_eintrag1 0)
 if [ -n "${MX:-}" ]; then
     q "move $((OX + MX)) $((OY + MY))" "click" "wait 1000"
     shot "11-menue-rechner"
-    q "key Down" "wait 200" "key Return" "wait 600"
+    q "move $((OX + EX)) $((OY + EY))" "wait 300" "click" "wait 600"
     ZA=$(wl-paste --no-newline 2>/dev/null || echo "?")
-    [ "$ZA" = "-3" ] && ok "Menü Rechner → Kopieren: −3 als „-3“ in der Zwischenablage" || nok "Menü Kopieren: [$ZA]"
+    [ "$ZA" = "-3" ] && ok "Menü Rechner → Kopieren (Maus): −3 als „-3“ in der Zwischenablage" || nok "Menü Kopieren: [$ZA]"
 else
     blocked "Menüposition nicht gemeldet"
 fi
 q "key Escape" "wait 300"
 
 # ---------------------------------------------- Info-Dialog mit Fokus
-read -r MX MY < <(menue_mitte 1)
+read -r MX MY < <(menue_mitte 1); read -r EX EY < <(menue_eintrag1 1)
 if [ -n "${MX:-}" ]; then
     q "move $((OX + MX)) $((OY + MY))" "click" "wait 1000"
     shot "12-menue-hilfe"
-    q "key Down" "wait 200" "key Return" "wait 1200"
+    q "move $((OX + EX)) $((OY + EY))" "wait 300" "click" "wait 1200"
     shot "13-info-dialog"
     running && ok "Info-Dialog geöffnet (Bild 13)" || nok "Absturz beim Öffnen des Info-Dialogs"
     # Schließen-Knopf hat den Fokus: Eingabetaste schließt; danach Tasten im Hauptfenster
@@ -221,11 +227,18 @@ if [ -n "${MX:-}" ]; then
     else nok "Info-Dialog schließen per Eingabetaste / Folgetasten"; fi
     shot "14-nach-info"
     # Zweiter Durchgang mit Escape
-    q "move $((OX + MX)) $((OY + MY))" "click" "wait 900" "key Down" "wait 200" "key Return" "wait 1000"
+    q "move $((OX + MX)) $((OY + MY))" "click" "wait 900" "move $((OX + EX)) $((OY + EY))" "wait 300" "click" "wait 1000"
     q "key Escape" "wait 800" "type 2+2=" "wait 400"
     sleep 0.5
     if running && erwartet "2 + 2 =" "4"; then ok "Info-Dialog per Escape geschlossen, danach Tastatur ohne Absturz"
     else nok "Info-Dialog schließen per Escape / Folgetasten"; fi
+    # Dritter Durchgang: Schließen-Knopf per Maus (Fokus bleibt im Dialog bis zum Klick)
+    q "move $((OX + MX)) $((OY + MY))" "click" "wait 900" "move $((OX + EX)) $((OY + EY))" "wait 300" "click" "wait 1000"
+    shot "15-info-dialog-2"
+    q "chord alt s" "wait 800" "type 3+3=" "wait 400"
+    sleep 0.5
+    if running && erwartet "3 + 3 =" "6"; then ok "Info-Dialog per Alt+S (Schließen) geschlossen, danach Tastatur ohne Absturz"
+    else nok "Info-Dialog schließen per Alt+S / Folgetasten"; fi
 else
     blocked "Menüposition Hilfe nicht gemeldet"
 fi

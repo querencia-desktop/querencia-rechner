@@ -259,7 +259,16 @@ impl Fenster {
         });
         self.window.add_controller(motion);
         let w = self.window.clone();
-        glib::timeout_add_local_once(std::time::Duration::from_millis(700), move || {
+        // Erst melden, wenn das Fenster ein Layout hat (im headless-Betrieb
+        // dauert der erste Frame länger als in der Sitzung).
+        glib::timeout_add_local(std::time::Duration::from_millis(300), move || {
+            let fertig = knoepfe
+                .first()
+                .and_then(|(_, b)| b.compute_bounds(&w))
+                .is_some_and(|r| r.width() > 20.0 && r.y() > 0.0);
+            if !fertig {
+                return glib::ControlFlow::Continue;
+            }
             let rechteck = |name: &str, widget: &gtk::Widget| {
                 if let Some(r) = widget.compute_bounds(&w) {
                     println!(
@@ -275,22 +284,19 @@ impl Fenster {
                 rechteck(&format!("knopf\t{text}"), b.upcast_ref());
             }
             // Menüköpfe: Kinder der PopoverMenuBar in der Reihenfolge des Modells.
-            let mut kind = w.first_child();
-            while let Some(k) = kind {
-                if let Some(bar) = k.first_child().filter(|c| c.is::<gtk::PopoverMenuBar>()) {
-                    let mut item = bar.first_child();
-                    let mut i = 0;
-                    while let Some(it) = item {
-                        rechteck(&format!("menue\t{i}"), &it);
-                        i += 1;
-                        item = it.next_sibling();
-                    }
+            if let Some(bar) = finde_widget(w.upcast_ref(), gtk::PopoverMenuBar::static_type()) {
+                let mut item = bar.first_child();
+                let mut i = 0;
+                while let Some(it) = item {
+                    rechteck(&format!("menue\t{i}"), &it);
+                    i += 1;
+                    item = it.next_sibling();
                 }
-                kind = k.next_sibling();
             }
             println!("fenster\t{}\t{}", w.width(), w.height());
             use std::io::Write;
             let _ = std::io::stdout().flush();
+            glib::ControlFlow::Break
         });
     }
 
@@ -317,14 +323,30 @@ impl Fenster {
         let keys = gtk::EventControllerKey::new();
         keys.set_propagation_phase(gtk::PropagationPhase::Capture);
         let weak = Rc::downgrade(self);
-        keys.connect_key_pressed(move |_, key, _, state| {
+        keys.connect_key_pressed(move |ctrl, key, _, state| {
             let Some(f) = weak.upgrade() else {
                 return glib::Propagation::Proceed;
             };
             if state.intersects(gdk::ModifierType::CONTROL_MASK | gdk::ModifierType::ALT_MASK) {
                 return glib::Propagation::Proceed;
             }
-            if f.fokus_im_menue() {
+            // Tasten für ein offenes Menü (eigene Popup-Oberfläche) oder mit
+            // Fokus im Menü gehören GTK: dort navigieren Pfeile und Eingabe.
+            let im_popup =
+                ctrl.current_event().and_then(|e| e.surface()) != NativeExt::surface(&f.window);
+            let weiterreichen =
+                im_popup || f.fokus_im_menue() || menue_offen(f.window.upcast_ref());
+            if f.debug {
+                println!(
+                    "taste\t{}\t{}\t{}",
+                    key.name().unwrap_or_default(),
+                    if weiterreichen { "gtk" } else { "rechner" },
+                    GtkWindowExt::focus(&f.window)
+                        .map(|w| w.type_().name().to_string())
+                        .unwrap_or_else(|| "kein Fokus".into())
+                );
+            }
+            if weiterreichen {
                 return glib::Propagation::Proceed;
             }
             match taste_fuer(key) {
@@ -410,6 +432,33 @@ impl Fenster {
                 }
             });
     }
+}
+
+/// Ist unter `wurzel` ein Popover (Menü) sichtbar?
+fn menue_offen(wurzel: &gtk::Widget) -> bool {
+    let mut kind = wurzel.first_child();
+    while let Some(k) = kind {
+        if (k.is::<gtk::Popover>() && k.is_visible()) || menue_offen(&k) {
+            return true;
+        }
+        kind = k.next_sibling();
+    }
+    false
+}
+
+/// Erstes Widget des Typs `typ` unter `wurzel` (Tiefensuche).
+fn finde_widget(wurzel: &gtk::Widget, typ: glib::Type) -> Option<gtk::Widget> {
+    let mut kind = wurzel.first_child();
+    while let Some(k) = kind {
+        if k.type_().is_a(typ) {
+            return Some(k);
+        }
+        if let Some(t) = finde_widget(&k, typ) {
+            return Some(t);
+        }
+        kind = k.next_sibling();
+    }
+    None
 }
 
 /// Tastaturtaste → Rechnertaste (Haupt- und Ziffernblock).

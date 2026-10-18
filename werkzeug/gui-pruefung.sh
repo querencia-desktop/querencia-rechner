@@ -12,6 +12,7 @@ E=$(cd "$(dirname "$(readlink -f "$0")")/.." && pwd)
 R=${1:-1024x768}
 case $R in *x*) ;; *) echo "Auflösung als BREITExHÖHE" >&2; exit 2 ;; esac
 BIN=${2:-}
+[ -n "$BIN" ] && BIN=$(readlink -f "$BIN")
 if [ -z "$BIN" ]; then
     if [ -x "$E/target/release/querencia-rechner" ]; then BIN=$E/target/release/querencia-rechner
     else BIN=$E/target/debug/querencia-rechner; fi
@@ -45,6 +46,7 @@ OUT=$OUT
 R=$R
 X
 sha256sum "$BIN" >"$OUT/binary.sha256"
-python3 -I "$E/werkzeug/isoliert.py" "$PROFIL" "$E/werkzeug/szenario.sh" 300 || true
+SZ=${3:-szenario.sh}
+python3 -I "$E/werkzeug/isoliert.py" "$PROFIL" "$E/werkzeug/$SZ" 300 || true
 cp "$PROFIL"/logs/*.log "$OUT/" 2>/dev/null || true
 cat "$OUT/ergebnis.txt"

@@ -9,6 +9,7 @@
 // never inject input into the running desktop session.
 //
 // Commands (one per line; coordinates in output pixels, see "size"):
+//   numlock on|off    report NumLock as locked (keypad digits, G2-H)
 //   size W H          size of the headless output (default 1280x720);
 //                     "move" coordinates are pixels of that output
 //   move X Y          jump the pointer
@@ -45,6 +46,7 @@ static struct wl_seat *seat;
 static struct zwlr_virtual_pointer_manager_v1 *pointer_manager;
 static struct zwp_virtual_keyboard_manager_v1 *keyboard_manager;
 static unsigned W = 1280, H = 720;
+static uint32_t locked = 0; /* gesperrte Modifikatoren (NumLock = Mod2) */
 static double px = 640, py = 600;
 
 static void global(void *data, struct wl_registry *registry, uint32_t name,
@@ -168,6 +170,10 @@ int main(void) {
         if (sscanf(line, "%31s", cmd) != 1 || cmd[0] == '#') continue;
         if (!strcmp(cmd, "size") && sscanf(line, "%*s %lf %lf", &x, &y) == 2 && x > 0 && y > 0) {
             W = (unsigned)x; H = (unsigned)y;
+        } else if (!strcmp(cmd, "numlock") && sscanf(line, "%*s %399s", arg) == 1) {
+            /* numlock on|off: Ziffernblock liefert Ziffern statt KP_End usw. */
+            locked = !strcmp(arg, "on") ? 16 : 0; /* Mod2 */
+            zwp_virtual_keyboard_v1_modifiers(keyboard, 0, 0, locked, 0);
         } else if (!strcmp(cmd, "move") && sscanf(line, "%*s %lf %lf", &x, &y) == 2) {
             px = x; py = y;
             zwlr_virtual_pointer_v1_motion_absolute(pointer, now_ms(), (uint32_t)x, (uint32_t)y, W, H);
@@ -223,7 +229,7 @@ int main(void) {
                          : code == KEY_LEFTMETA ? 64 : 0;
             if (bit) {
                 mods = !strcmp(cmd, "keydown") ? (mods | bit) : (mods & ~bit);
-                zwp_virtual_keyboard_v1_modifiers(keyboard, mods, 0, 0, 0);
+                zwp_virtual_keyboard_v1_modifiers(keyboard, mods, 0, locked, 0);
             }
             wl_display_roundtrip(display); sleep_ms(30);
         } else if (!strcmp(cmd, "chord") && sscanf(line, "%*s %31s %399s", cmd, arg) == 2) {
@@ -236,7 +242,7 @@ int main(void) {
             if (strstr(cmd, "alt")) { codes[n++] = KEY_LEFTALT; mods |= 8; }
             for (int i = 0; i < n; i++)
                 zwp_virtual_keyboard_v1_key(keyboard, now_ms(), codes[i], WL_KEYBOARD_KEY_STATE_PRESSED);
-            zwp_virtual_keyboard_v1_modifiers(keyboard, mods, 0, 0, 0);
+            zwp_virtual_keyboard_v1_modifiers(keyboard, mods, 0, locked, 0);
             wl_display_roundtrip(display); sleep_ms(30);
             zwp_virtual_keyboard_v1_key(keyboard, now_ms(), code, WL_KEYBOARD_KEY_STATE_PRESSED);
             wl_display_roundtrip(display); sleep_ms(30);
@@ -244,7 +250,7 @@ int main(void) {
             wl_display_roundtrip(display); sleep_ms(30);
             for (int i = n - 1; i >= 0; i--)
                 zwp_virtual_keyboard_v1_key(keyboard, now_ms(), codes[i], WL_KEYBOARD_KEY_STATE_RELEASED);
-            zwp_virtual_keyboard_v1_modifiers(keyboard, 0, 0, 0, 0);
+            zwp_virtual_keyboard_v1_modifiers(keyboard, 0, 0, locked, 0);
             wl_display_roundtrip(display); sleep_ms(30);
         } else if (!strcmp(cmd, "key") && sscanf(line, "%*s %399s", arg) == 1) {
             int code = named_key(arg);
@@ -260,14 +266,14 @@ int main(void) {
                 if (code < 0) { fprintf(stderr, "qeingabe: Zeichen %c?\n", *t); continue; }
                 if (shift) {
                     zwp_virtual_keyboard_v1_key(keyboard, now_ms(), KEY_LEFTSHIFT, WL_KEYBOARD_KEY_STATE_PRESSED);
-                    zwp_virtual_keyboard_v1_modifiers(keyboard, 1, 0, 0, 0);
+                    zwp_virtual_keyboard_v1_modifiers(keyboard, 1, 0, locked, 0);
                 }
                 zwp_virtual_keyboard_v1_key(keyboard, now_ms(), code, WL_KEYBOARD_KEY_STATE_PRESSED);
                 wl_display_roundtrip(display); sleep_ms(15);
                 zwp_virtual_keyboard_v1_key(keyboard, now_ms(), code, WL_KEYBOARD_KEY_STATE_RELEASED);
                 if (shift) {
                     zwp_virtual_keyboard_v1_key(keyboard, now_ms(), KEY_LEFTSHIFT, WL_KEYBOARD_KEY_STATE_RELEASED);
-                    zwp_virtual_keyboard_v1_modifiers(keyboard, 0, 0, 0, 0);
+                    zwp_virtual_keyboard_v1_modifiers(keyboard, 0, 0, locked, 0);
                 }
                 wl_display_roundtrip(display); sleep_ms(15);
             }
