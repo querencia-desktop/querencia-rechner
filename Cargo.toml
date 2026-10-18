@@ -1,0 +1,21 @@
+[package]
+name = "querencia-rechner"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.92"
+description = "Querencia Rechner: klassischer Taschenrechner für Querencia Desktop"
+license = "GPL-3.0-or-later"
+publish = false
+
+[dependencies]
+# Dieselben Bindings wie Querencia Editor und Querencia Bilder (gtk-rs 0.11,
+# Cargo.lock vom Editor übernommen, damit der Bau --offline gelingt).
+gtk = { package = "gtk4", version = "0.11", features = ["v4_12"] }
+
+[profile.release]
+lto = true
+codegen-units = 1
+
+[lints.rust]
+unsafe_code = "forbid"
+unused_must_use = "deny"
