@@ -1,0 +1,119 @@
+/* Querencia Rechner – klassische Optik (Ambiance-Farbwerte wie Panel, Editor
+   und Bilder; Akzent #F07746). */
+
+window.qr-window menubar {
+  background-color: #f2f1f0;
+  border-bottom: 1px solid #c7c2be;
+  padding: 1px 2px;
+}
+
+window.qr-window menubar > item {
+  padding: 3px 8px;
+  border-radius: 0;
+  color: #3c3c3c;
+}
+
+window.qr-window menubar > item:hover,
+window.qr-window menubar > item:selected {
+  background-image: linear-gradient(to bottom, #f6a179, #f07746);
+  color: #ffffff;
+}
+
+window.qr-window popover.menu contents {
+  border-radius: 0;
+  padding: 2px 0;
+  background-color: #f5f4f2;
+  border: 1px solid #c7c2be;
+}
+
+window.qr-window popover.menu modelbutton {
+  border-radius: 0;
+  padding: 3px 16px;
+}
+
+window.qr-window popover.menu modelbutton:hover,
+window.qr-window popover.menu modelbutton:selected {
+  background-image: linear-gradient(to bottom, #f6a179, #f07746);
+  color: #ffffff;
+}
+
+/* Anzeige: weißes Feld mit eingelassenem Rand wie ein LCD-Rahmen */
+box.qr-anzeige {
+  background-color: #ffffff;
+  border: 1px solid #a8a29d;
+  border-radius: 2px;
+  padding: 4px 8px;
+  margin: 8px 8px 4px 8px;
+}
+
+label.qr-eingabezeile {
+  font-family: "DejaVu Sans Mono", monospace;
+  font-size: 10pt;
+  color: #6f6a66;
+}
+
+label.qr-ergebnis {
+  font-family: "DejaVu Sans Mono", monospace;
+  font-size: 22pt;
+  color: #1e1e1e;
+}
+
+label.qr-ergebnis.qr-fehler {
+  font-size: 13pt;
+  color: #b4231b;
+}
+
+label.qr-speicher {
+  font-family: "DejaVu Sans", sans-serif;
+  font-size: 9pt;
+  font-weight: bold;
+  color: #f07746;
+  min-width: 14px;
+}
+
+/* Tasten */
+grid.qr-tasten {
+  margin: 4px 8px 8px 8px;
+}
+
+grid.qr-tasten button {
+  min-width: 44px;
+  min-height: 30px;
+  padding: 2px 4px;
+  border-radius: 2px;
+  font-family: "DejaVu Sans", sans-serif;
+  font-size: 11pt;
+}
+
+grid.qr-tasten button.qr-ziffer {
+  font-weight: bold;
+}
+
+grid.qr-tasten button.qr-op {
+  font-size: 13pt;
+}
+
+grid.qr-tasten button.qr-gleich {
+  background-image: linear-gradient(to bottom, #f6a179, #f07746);
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 14pt;
+  border-color: #c6602f;
+}
+
+grid.qr-tasten button.qr-gleich:hover {
+  background-image: linear-gradient(to bottom, #f9b48f, #f28455);
+}
+
+grid.qr-tasten button.qr-gleich:active {
+  background-image: linear-gradient(to bottom, #e0683a, #f07746);
+}
+
+grid.qr-tasten button.qr-loeschen {
+  color: #b4231b;
+}
+
+window.qr-dialog button {
+  border-radius: 2px;
+  min-width: 80px;
+}

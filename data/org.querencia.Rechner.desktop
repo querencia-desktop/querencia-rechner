@@ -1,0 +1,21 @@
+[Desktop Entry]
+# Querencia Rechner. Desktop-ID = GApplication-ID org.querencia.Rechner, damit
+# labwc und die Fensterliste Titelleistensymbol und Namen zuordnen. Erscheint
+# über Categories=Utility; im Panel unter „Zubehör“.
+Type=Application
+Version=1.5
+Name=Taschenrechner
+Name[de]=Taschenrechner
+GenericName=Calculator
+GenericName[de]=Taschenrechner
+Comment=Perform arithmetic calculations
+Comment[de]=Grundrechenarten, Prozent, Wurzel und Speicher
+Exec=querencia-rechner
+TryExec=querencia-rechner
+Icon=org.querencia.Rechner
+Terminal=false
+Categories=GTK;Utility;Calculator;
+Keywords=calculator;calc;
+Keywords[de]=Rechner;Taschenrechner;Rechnen;
+StartupNotify=true
+StartupWMClass=org.querencia.Rechner
