@@ -12,12 +12,15 @@ Tastaturbedienung mit Ziffernblock, Kopieren/Einfügen (Strg+C/Strg+V), Menü
 „Rechner“ und „Hilfe → Info“. Fehler (Division durch Null, Überlauf, Wurzel
 aus negativer Zahl) erscheinen als Text in der Anzeige.
 
+**0.1.1:** intern volle `f64`-Genauigkeit, gerundet wird nur für Anzeige und
+Zwischenablage (`2 √ x²` = 2, `1 ÷ 3 × 3` = 1); siehe `CHANGELOG.md`.
+
 **Nicht enthalten:** wissenschaftlicher und Programmierer-Modus, Einheiten,
 Verlauf.
 
 | Datei | Inhalt |
 |---|---|
-| `src/rechenkern.rs` | Parser, Auswertung, Rundung, Formatierung; Prozentsemantik dokumentiert; Unit-Tests |
+| `src/rechenkern.rs` | Parser, Auswertung, Anzeigerundung, Formatierung; Prozentsemantik und Genauigkeit dokumentiert; Unit-Tests |
 | `src/modell.rs` | Tasten und Zustand (Eingabezeile, Ergebnis, Speicher); Unit-Tests |
 | `src/fenster.rs` | Fenster, Menüleiste, Tastenfeld, Tastatur, Zwischenablage |
 | `src/dialoge.rs` | Info-Dialog, Fenstersymbol |

@@ -161,6 +161,40 @@ pruefe "Speicher: MC löscht die Marke" "32" "32"
 klick AC MR
 pruefe "Speicher: MR ohne Speicher tut nichts" "" "0"
 
+# ------------------------------------- Genauigkeit (0.1.1, QREL-05 R.3)
+# Intern volle f64-Genauigkeit, gerundet nur Anzeige und Zwischenablage.
+klick AC 2 √
+pruefe "Genauigkeit: √2 zeigt 1,41421356237" "1,41421356237" "1,41421356237"
+klick x²
+pruefe "Genauigkeit: 2 √ x² = 2 (0.1.0: 1,99999999999)" "2" "2"
+shot "16-wurzel-quadrat"
+klick 1/x
+pruefe "Genauigkeit: danach 1/x = 0,5 (0.1.0: 0,500000000003)" "0,5" "0,5"
+shot "17-kehrwert"
+klick × 3 0 =
+pruefe "Genauigkeit: 0,5 × 30 = 15 (0.1.0: 15,0000000001)" "0,5 × 30 =" "15"
+q "key Escape" "type 1/3*3=" "wait 300"
+pruefe "Genauigkeit: 1 ÷ 3 × 3 = 1" "1 ÷ 3 × 3 =" "1"
+q "key Escape" "type 1/3=" "type *3=" "wait 300"
+pruefe "Genauigkeit: Ergebnis 1 ÷ 3 weiter × 3 = 1" "0,333333333333 × 3 =" "1"
+shot "18-drittel-mal-drei"
+q "key Escape" "type 0,1+0,2=" "type -0,3=" "wait 300"
+pruefe "Genauigkeit: 0,1 + 0,2 = 0,3, davon − 0,3 = 0 (keine Binärreste)" "0,3 − 0,3 =" "0"
+q "key Escape" "type 3rr" "wait 200"
+pruefe "Genauigkeit: 1/x 1/x von 3 = 3 (Tastatur r)" "3" "3"
+q "key Escape" "type 2s" "chord ctrl c" "wait 600"
+ZA=$(wl-paste --no-newline 2>/dev/null || echo "?")
+[ "$ZA" = "1,41421356237" ] && ok "Genauigkeit: Strg+C nach √2 kopiert die Anzeige 1,41421356237" || nok "Kopieren √2: [$ZA]"
+q "type q" "chord ctrl c" "wait 600"
+ZA=$(wl-paste --no-newline 2>/dev/null || echo "?")
+[ "$ZA" = "2" ] && ok "Genauigkeit: Strg+C nach √2 x² kopiert 2" || nok "Kopieren √2²: [$ZA]"
+klick AC 2 √ M+ AC MR x²
+pruefe "Genauigkeit: Speicher behält den vollen Wert (√2 M+, MR x² = 2)" "2" "2" "M"
+klick MC AC 4 √ 3
+pruefe "Ziffer nach Funktion ergänzt × (wie 0.1.0, Vorbild gcalctool 5.30)" "2 × 3" "3"
+klick AC
+pruefe "Genauigkeit: AC räumt auf" "" "0"
+
 # -------------------------------------------------- Division durch Null
 q "key Escape" "type 5/0=" "wait 300"
 pruefe "Division durch Null als Text" "5 ÷ 0" "Division durch Null"

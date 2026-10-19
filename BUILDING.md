@@ -18,8 +18,13 @@ Scalable-Verzeichnis, stürzt GTK 4.22 beim Schließen fokussierter Dialoge ab
 zusätzlich unter dem Namen `org.querencia.Rechner-fenster` als Ressource
 eingebettet (`werkzeug/ressourcen.sh` erzeugt `data/resource/rechner.gresource`).
 
-**Integration (vorbereitet, nicht ausgeführt):**
-`integration/werkzeug/rechner-integrieren.sh pruefen|aktivieren|zurueck` legt
-`~/opt/querencia/rechner/<sha16>/`, den Link `~/opt/querencia/bin/querencia-rechner`
-und den Starter `~/.local/share/applications/org.querencia.Rechner.desktop` an
-(Vorlagen in `integration/vorschlag/`). Nur nach Freigabe des Besitzers.
+**Integration 0.1.1 (Tausch 0.1.0 → 0.1.1, nur nach Freigabe über die
+Status-Session):** `integration/werkzeug/rechner-integrieren.sh pruefen|aktivieren|zurueck`
+legt `~/opt/querencia/rechner/<sha16>/` an, stellt den Link
+`~/opt/querencia/bin/querencia-rechner` darauf um und ersetzt den Starter
+`~/.local/share/applications/org.querencia.Rechner.desktop` (Vorlagen in
+`integration/vorschlag/`, Prüfsummen in `integration/vorschlag/SHA256SUMS`).
+`zurueck` stellt Link und Starter von 0.1.0 (`e151ed18bd549976`) wieder her;
+der Starter von 0.1.0 liegt dafür in `integration/vorschlag/alt/`. Nach einer
+Quelländerung: `cargo build --release --locked --offline`, dann
+`bash integration/werkzeug/vorschlag-erzeugen.sh`.

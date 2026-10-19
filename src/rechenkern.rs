@@ -10,15 +10,22 @@
 //! primaer  := ( zahl | '(' ausdruck ')' ) '%'*
 //! ```
 //!
-//! **Zahlen** rechnet der Kern als `f64`; Zwischenwerte bleiben ungerundet
-//! (so ergibt (1 ÷ 3) × 3 wieder 1), das Endergebnis und die Ergebnisse der
-//! Funktionen √, x², 1/x werden mit [`runden`] auf 12 signifikante Stellen
-//! gerundet, damit Dezimalbrüche wie 0,1 + 0,2 exakt 0,3 ergeben und
-//! Folgerechnungen keine Binärreste mitschleppen.
-//! [`formatieren`] zeigt höchstens 12 signifikante Stellen mit Dezimalkomma;
-//! außerhalb von 10⁻⁹ … 10¹² wird die Exponentenschreibweise (`1,5e+15`)
-//! verwendet. Das Vorzeichen ist in allen Texten des Kerns das ASCII-Minus
-//! (zum Einfügen in andere Programme); das Fenster zeigt es als „−“ (U+2212).
+//! **Zahlen** rechnet der Kern als `f64` mit voller Genauigkeit; weder
+//! Zwischenwerte noch Endergebnisse oder die Ergebnisse der Funktionen √, x²,
+//! 1/x werden gerundet (seit 0.1.1, QREL-05 R.3: in 0.1.0 wurden die
+//! Funktionsergebnisse auf 12 Stellen gerundet weiterverwendet, so ergab
+//! 2 √ x² = 1,99999999999). Gerundet wird nur für die Anzeige:
+//! [`formatieren`] zeigt höchstens 12 signifikante Stellen mit Dezimalkomma,
+//! damit Binärreste wie 0,1 + 0,2 = 0,30000000000000004 als 0,3 und
+//! √2² = 2,0000000000000004 als 2 erscheinen; außerhalb von 10⁻⁹ … 10¹² wird
+//! die Exponentenschreibweise (`1,5e+15`) verwendet. Eine Ausnahme ist die
+//! **Auslöschung** bei Summe und Differenz ([`summe`]): Heben sich zwei
+//! Summanden bis auf einen Rest unter 4 · 2⁻⁵² (≈ 8,9 · 10⁻¹⁶) des größeren
+//! auf, ist das Ergebnis 0 (sonst zeigte 0,1 + 0,2 − 0,3 den Binärrest
+//! 5,55111512313e-17). Getippte Zahlen haben höchstens 15 Stellen, ihre
+//! echten Differenzen liegen bei mindestens 10⁻¹⁵ des größeren Summanden.
+//! Das Vorzeichen ist in allen Texten des Kerns das ASCII-Minus (zum Einfügen
+//! in andere Programme); das Fenster zeigt es als „−“ (U+2212).
 //!
 //! **Prozent** folgt der Semantik von gcalctool bzw. seinem Nachfolger
 //! gnome-calculator (das Prozentzeichen ist ein nachgestellter Operator):
@@ -62,11 +69,15 @@ impl Op {
     }
 }
 
-/// Bausteine eines Ausdrucks. Zahlen bleiben als Text, wie sie getippt
-/// wurden (z. B. `0,50` oder `-3`), damit die Anzeige beim Tippen stimmt.
+/// Bausteine eines Ausdrucks. Getippte Zahlen bleiben als Text, wie sie
+/// getippt wurden (z. B. `0,50` oder `-3`), damit die Anzeige beim Tippen
+/// stimmt. Berechnete Zahlen (Ergebnis, Funktion, Speicher, Einfügen) sind
+/// [`Token::Wert`] mit voller Genauigkeit und werden nur für die Anzeige
+/// gerundet.
 #[derive(Clone, Debug, PartialEq)]
 pub enum Token {
     Zahl(String),
+    Wert(f64),
     Op(Op),
     Auf,
     Zu,
@@ -101,8 +112,12 @@ impl fmt::Display for Fehler {
     }
 }
 
-/// Signifikante Stellen für Rundung und Anzeige.
+/// Signifikante Stellen der Anzeige.
 const STELLEN: i32 = 12;
+
+/// Auslöschungsgrenze für Summe und Differenz (relativ zum größeren
+/// Summanden, vier Einheiten der letzten Binärstelle), siehe [`summe`].
+const AUSLOESCHUNG: f64 = 4.0 * f64::EPSILON;
 
 /// Zwischenwert: unendlich/NaN ist ein Überlauf.
 fn endlich(x: f64) -> Result<f64, Fehler> {
@@ -113,25 +128,15 @@ fn endlich(x: f64) -> Result<f64, Fehler> {
     }
 }
 
-/// Rundet auf 12 signifikante Stellen; unendlich/NaN wird zum Fehler.
-pub fn runden(x: f64) -> Result<f64, Fehler> {
-    if !x.is_finite() {
-        return Err(Fehler::Ueberlauf);
-    }
-    if x == 0.0 {
-        return Ok(0.0);
-    }
-    let e = x.abs().log10().floor() as i32;
-    if !(-280..=280).contains(&e) {
-        // Rundung würde selbst überlaufen; die Anzeige rundet ohnehin.
-        return Ok(x);
-    }
-    let faktor = 10f64.powi(STELLEN - 1 - e);
-    let r = (x * faktor).round() / faktor;
-    if r.is_finite() {
-        Ok(r)
+/// Summe `a + b` mit voller Genauigkeit; heben sich die Summanden bis auf
+/// einen Binärrest auf (kleiner als 4 · 2⁻⁵² des größeren Betrags), ist das
+/// Ergebnis genau 0. Unendlich/NaN ist ein Überlauf.
+pub fn summe(a: f64, b: f64) -> Result<f64, Fehler> {
+    let r = endlich(a + b)?;
+    if r.abs() < a.abs().max(b.abs()) * AUSLOESCHUNG {
+        Ok(0.0)
     } else {
-        Err(Fehler::Ueberlauf)
+        Ok(r)
     }
 }
 
@@ -216,12 +221,12 @@ pub fn wurzel(x: f64) -> Result<f64, Fehler> {
     if x < 0.0 {
         return Err(Fehler::NegativeWurzel);
     }
-    runden(x.sqrt())
+    endlich(x.sqrt())
 }
 
 /// Quadrat.
 pub fn quadrat(x: f64) -> Result<f64, Fehler> {
-    runden(x * x)
+    endlich(x * x)
 }
 
 /// Kehrwert.
@@ -229,7 +234,7 @@ pub fn kehrwert(x: f64) -> Result<f64, Fehler> {
     if x == 0.0 {
         return Err(Fehler::DivisionDurchNull);
     }
-    runden(1.0 / x)
+    endlich(1.0 / x)
 }
 
 /// Zwischenwert der Auswertung: ein Prozentwert merkt sich, dass er mit `%`
@@ -266,14 +271,16 @@ impl Parser<'_> {
             self.pos += 1;
             let rechts = self.term()?;
             let a = links.zahl();
-            let r = match (op, rechts) {
-                (Op::Plus, Wert::Prozent(p)) => a + a * p / 100.0,
-                (Op::Minus, Wert::Prozent(p)) => a - a * p / 100.0,
-                (Op::Plus, Wert::Normal(b)) => a + b,
-                (Op::Minus, Wert::Normal(b)) => a - b,
+            let b = match rechts {
+                Wert::Prozent(p) => endlich(a * p / 100.0)?,
+                Wert::Normal(b) => b,
+            };
+            let r = match op {
+                Op::Plus => summe(a, b)?,
+                Op::Minus => summe(a, -b)?,
                 _ => unreachable!(),
             };
-            links = Wert::Normal(endlich(r)?);
+            links = Wert::Normal(r);
         }
         Ok(links)
     }
@@ -320,6 +327,11 @@ impl Parser<'_> {
                 self.pos += 1;
                 Wert::Normal(x)
             }
+            Some(Token::Wert(x)) => {
+                let x = endlich(*x)?;
+                self.pos += 1;
+                Wert::Normal(x)
+            }
             Some(Token::Auf) => {
                 self.pos += 1;
                 let innen = self.ausdruck()?;
@@ -349,7 +361,7 @@ pub fn auswerten(tokens: &[Token]) -> Result<f64, Fehler> {
     let mut p = Parser { tokens, pos: 0 };
     let wert = p.ausdruck()?;
     match p.naechstes() {
-        None => runden(wert.zahl()),
+        None => endlich(wert.zahl()),
         Some(Token::Zu) => Err(Fehler::Ungueltig),
         Some(_) => Err(Fehler::Ungueltig),
     }
@@ -361,6 +373,7 @@ pub fn ausdruck_text(tokens: &[Token]) -> String {
     for (i, t) in tokens.iter().enumerate() {
         let stueck: String = match t {
             Token::Zahl(z) => z.replace('-', "−"),
+            Token::Wert(x) => formatieren(*x).replace('-', "−"),
             Token::Op(op) => op.zeichen().to_string(),
             Token::Auf => "(".to_string(),
             Token::Zu => ")".to_string(),
@@ -467,9 +480,10 @@ mod tests {
         assert_eq!(rechne("200*10%"), Ok(20.0));
         assert_eq!(rechne("200/10%"), Ok(2000.0));
         assert_eq!(rechne("10%+5"), Ok(5.1), "Prozent links zählt als n/100");
+        // 0.1.1: ungerundet 0,30000000000000004, angezeigt 0,3 wie in 0.1.0.
         assert_eq!(
-            rechne("(10%)*3"),
-            Ok(0.3),
+            rechne("(10%)*3").map(formatieren),
+            Ok("0,3".to_string()),
             "Klammer macht aus Prozent eine Zahl"
         );
         assert_eq!(rechne("2*3+10%"), Ok(6.6), "Punkt vor Strich bleibt");
@@ -479,7 +493,9 @@ mod tests {
 
     #[test]
     fn dezimalbrueche_ohne_binaerreste() {
-        assert_eq!(rechne("0,1+0,2"), Ok(0.3));
+        // 0.1.1: der Wert bleibt ungerundet (0,30000000000000004), nur die
+        // Anzeige rundet; vorher wurde schon das Ergebnis auf 0,3 gerundet.
+        assert_eq!(rechne("0,1+0,2"), Ok(0.1 + 0.2));
         assert_eq!(formatieren(rechne("0,1+0,2").unwrap()), "0,3");
         assert_eq!(formatieren(rechne("1/3").unwrap()), "0,333333333333");
         assert_eq!(formatieren(rechne("2/3").unwrap()), "0,666666666667");
@@ -510,11 +526,14 @@ mod tests {
             Err(Fehler::Ueberlauf)
         );
         assert_eq!(quadrat(1e200), Err(Fehler::Ueberlauf));
-        assert_eq!(runden(f64::INFINITY), Err(Fehler::Ueberlauf));
-        assert_eq!(runden(f64::NAN), Err(Fehler::Ueberlauf));
-        // Nahe der Grenze darf die Rundung selbst nicht überlaufen.
-        assert!(runden(1e300).is_ok());
-        assert!(runden(1e-300).is_ok());
+        // 0.1.1: `runden` entfällt (keine Zwischenrundung mehr); Überlauf
+        // erkennen jetzt Summe und Funktionen selbst.
+        assert_eq!(summe(f64::MAX, f64::MAX), Err(Fehler::Ueberlauf));
+        assert_eq!(summe(f64::NAN, 1.0), Err(Fehler::Ueberlauf));
+        assert_eq!(kehrwert(1e-310), Err(Fehler::Ueberlauf));
+        // Nahe der Grenze darf die Anzeigerundung nicht überlaufen.
+        assert_eq!(formatieren(1e300), "1e+300");
+        assert_eq!(formatieren(1e-300), "1e-300");
     }
 
     #[test]
@@ -559,13 +578,82 @@ mod tests {
         assert_eq!(formatieren(f64::INFINITY), "Überlauf");
     }
 
+    /// 0.1.1: gerundet wird nur noch für die Anzeige (vorher `runden` auf
+    /// den Wert selbst); dieselben Fälle jetzt über [`formatieren`].
     #[test]
     fn runden_zwoelf_stellen() {
-        assert_eq!(runden(0.1 + 0.2), Ok(0.3));
-        assert_eq!(runden(1.0 / 3.0), Ok(0.333333333333));
-        assert_eq!(runden(123456789012345.0), Ok(123456789012000.0));
-        assert_eq!(runden(-2.5), Ok(-2.5));
-        assert_eq!(runden(0.0), Ok(0.0));
+        assert_eq!(formatieren(0.1 + 0.2), "0,3");
+        assert_eq!(formatieren(1.0 / 3.0), "0,333333333333");
+        assert_eq!(formatieren(123456789012345.0), "1,23456789012e+14");
+        assert_eq!(formatieren(-2.5), "-2,5");
+        assert_eq!(formatieren(0.0), "0");
+        assert_eq!(formatieren(2.0000000000000004), "2");
+        assert_eq!(formatieren(0.49999999999999994), "0,5");
+    }
+
+    #[test]
+    fn volle_genauigkeit_in_ketten() {
+        // QREL-05 R.3: 2 √ x² = 2, danach 1/x = 0,5.
+        let w = wurzel(2.0).unwrap();
+        assert_eq!(w, std::f64::consts::SQRT_2, "Wurzel ungerundet");
+        let q = quadrat(w).unwrap();
+        assert_eq!(formatieren(q), "2");
+        assert_eq!(formatieren(kehrwert(q).unwrap()), "0,5");
+        // 1/x 1/x kommt zurück, ebenso √ x² bei anderen Zahlen.
+        assert_eq!(
+            kehrwert(kehrwert(3.0).unwrap()).map(formatieren),
+            Ok("3".into())
+        );
+        assert_eq!(
+            quadrat(wurzel(3.0).unwrap()).map(formatieren),
+            Ok("3".into())
+        );
+        assert_eq!(
+            wurzel(quadrat(1.1).unwrap()).map(formatieren),
+            Ok("1,1".into())
+        );
+        // 1 ÷ 3 × 3 ohne Klammer, gerundeter Zwischenwert als Zahl.
+        assert_eq!(rechne("1/3*3"), Ok(1.0));
+        let drittel = auswerten(&t("1/3")).unwrap();
+        assert_eq!(drittel, 1.0 / 3.0, "Ergebnis ungerundet");
+        assert_eq!(
+            auswerten(&[Token::Wert(drittel), op(Op::Mal), z("3")]),
+            Ok(1.0)
+        );
+        // Werkstatt kd1.png: 0,500000000003 × 30 = 15,0000000001.
+        let halb = kehrwert(q).unwrap();
+        assert_eq!(
+            auswerten(&[Token::Wert(halb), op(Op::Mal), z("30")]).map(formatieren),
+            Ok("15".into())
+        );
+        assert_eq!(formatieren(rechne("0,1+0,2").unwrap()), "0,3");
+        assert_eq!(
+            ausdruck_text(&[Token::Wert(w), op(Op::Plus), Token::Wert(-0.5)]),
+            "1,41421356237 + −0,5"
+        );
+    }
+
+    #[test]
+    fn ausloeschung_ergibt_null() {
+        assert_eq!(rechne("0,1+0,2-0,3"), Ok(0.0));
+        assert_eq!(formatieren(rechne("0,1+0,2-0,3").unwrap()), "0");
+        let summe_ungerundet = rechne("0,1+0,2").unwrap();
+        assert_eq!(
+            auswerten(&[Token::Wert(summe_ungerundet), op(Op::Minus), z("0,3")]),
+            Ok(0.0)
+        );
+        assert_eq!(summe(0.1 + 0.2, -0.3), Ok(0.0));
+        assert_eq!(rechne("100-100%"), Ok(0.0));
+        // Echte kleine Differenzen getippter Zahlen bleiben erhalten.
+        assert_eq!(rechne("999999999999999-999999999999998"), Ok(1.0));
+        // Grenze von f64 (wie 0.1.0): 0,9999999999999 ist binär nicht genau
+        // darstellbar, die Differenz zeigt den Darstellungsfehler.
+        assert_eq!(
+            formatieren(rechne("1-0,9999999999999").unwrap()),
+            "1,00031094519e-13"
+        );
+        assert_eq!(rechne("5-5"), Ok(0.0));
+        assert_eq!(rechne("-2+2"), Ok(0.0));
     }
 
     #[test]

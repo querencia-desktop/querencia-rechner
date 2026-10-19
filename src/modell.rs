@@ -29,8 +29,18 @@
 //! - M+ und M− rechnen mit dem Anzeigewert (Ergebnis oder aktuelle Zahl),
 //!   MR fügt den Speicherwert als Zahl ein, MC leert den Speicher.
 //! - Kopieren liefert den Anzeigewert (Ergebnis oder aktuelle Zahl) mit
-//!   Dezimalkomma und ASCII-Minus; Einfügen übernimmt eine Zahl mit Komma
-//!   oder Punkt als neue aktuelle Zahl.
+//!   Dezimalkomma und ASCII-Minus, gerundet wie die Anzeige; Einfügen
+//!   übernimmt eine Zahl mit Komma oder Punkt als neue aktuelle Zahl.
+//! - Eine Ziffer direkt nach einem Funktionsergebnis, MR oder Einfügen
+//!   beginnt keine neue Zahl, sondern ergänzt „ד (`2 √ 3` = √2 × 3). Das
+//!   Vorbild hat diese Tasten im einfachen Modus nicht; im erweiterten Modus
+//!   von gcalctool 5.30 sind √, x², x⁻¹ Zeichen im Ausdruck, und nur nach
+//!   Gleich beginnt eine Ziffer neu (`display.c`, `FN_TEXT`).
+//!
+//! **Genauigkeit** (seit 0.1.1): Ergebnisse, Funktionsergebnisse, Speicher
+//! und eingefügte Zahlen bleiben als [`Token::Wert`] mit voller
+//! `f64`-Genauigkeit im Ausdruck; gerundet wird nur für Anzeige und
+//! Zwischenablage (`2 √ x²` = 2, danach `1/x` = 0,5).
 
 use crate::rechenkern::{self as kern, Fehler, Op, Token};
 
@@ -109,6 +119,7 @@ impl Modell {
             Some(Err(_)) => None,
             None => match self.tokens.last() {
                 Some(Token::Zahl(z)) => Some(z.clone()),
+                Some(Token::Wert(x)) => Some(kern::formatieren(*x)),
                 _ => None,
             },
         }
@@ -119,10 +130,7 @@ impl Modell {
         let Some(x) = kern::zahl_lesen(text) else {
             return false;
         };
-        let Ok(x) = kern::runden(x) else {
-            return false;
-        };
-        self.zahl_einsetzen(kern::formatieren(x));
+        self.zahl_einsetzen(x);
         true
     }
 
@@ -146,7 +154,7 @@ impl Modell {
             Taste::MMinus => self.speicher_rechnen(-1.0),
             Taste::MR => {
                 if let Some(m) = self.speicher {
-                    self.zahl_einsetzen(kern::formatieren(m));
+                    self.zahl_einsetzen(m);
                 }
             }
             Taste::MC => self.speicher = None,
@@ -161,9 +169,23 @@ impl Modell {
             .rev()
             .find_map(|t| match t {
                 Token::Zahl(z) => Some(z.clone()),
+                Token::Wert(x) => Some(kern::formatieren(*x)),
                 _ => None,
             })
             .unwrap_or_else(|| "0".to_string())
+    }
+
+    /// Wert der aktuellen Zahl (getippt oder berechnet), 0 ohne Zahl.
+    fn aktuelle_zahl(&self) -> f64 {
+        self.tokens
+            .iter()
+            .rev()
+            .find_map(|t| match t {
+                Token::Zahl(z) => Some(kern::zahl_lesen(z).unwrap_or(0.0)),
+                Token::Wert(x) => Some(*x),
+                _ => None,
+            })
+            .unwrap_or(0.0)
     }
 
     /// Anzeigewert als Zahl: Ergebnis oder aktuelle Zahl (0 ohne Zahl);
@@ -172,7 +194,7 @@ impl Modell {
         match self.ergebnis {
             Some(Ok(x)) => Some(x),
             Some(Err(_)) => None,
-            None => Some(kern::zahl_lesen(&self.aktuelle_zahl_text()).unwrap_or(0.0)),
+            None => Some(self.aktuelle_zahl()),
         }
     }
 
@@ -187,7 +209,7 @@ impl Modell {
     fn frisch(&mut self, weiter: bool) {
         match self.ergebnis.take() {
             Some(Ok(x)) if weiter => {
-                self.tokens = vec![Token::Zahl(kern::formatieren(x))];
+                self.tokens = vec![Token::Wert(x)];
             }
             _ => self.tokens.clear(),
         }
@@ -208,17 +230,22 @@ impl Modell {
         }
     }
 
-    /// Setzt `text` als neue aktuelle Zahl (MR, Einfügen).
-    fn zahl_einsetzen(&mut self, text: String) {
+    /// Endet der Ausdruck mit einer Zahl (getippt oder berechnet)?
+    fn endet_mit_zahl(&self) -> bool {
+        matches!(self.tokens.last(), Some(Token::Zahl(_) | Token::Wert(_)))
+    }
+
+    /// Setzt `x` als neue aktuelle Zahl mit voller Genauigkeit (MR, Einfügen).
+    fn zahl_einsetzen(&mut self, x: f64) {
         if self.ergebnis.is_some() {
             self.frisch(false);
         }
-        if self.tippt || matches!(self.tokens.last(), Some(Token::Zahl(_))) {
+        if self.tippt || self.endet_mit_zahl() {
             self.tokens.pop();
         } else if self.braucht_mal() {
             self.tokens.push(Token::Op(Op::Mal));
         }
-        self.tokens.push(Token::Zahl(text));
+        self.tokens.push(Token::Wert(x));
         self.tippt = false;
     }
 
@@ -240,7 +267,7 @@ impl Modell {
             }
             return;
         }
-        if matches!(self.tokens.last(), Some(Token::Zahl(_))) {
+        if self.endet_mit_zahl() {
             // Zahl aus MR/Einfügen/Funktion: neue Zahl ersetzt sie nicht,
             // sondern wird ohne Operator als ungültig gewertet – deshalb „×“.
             self.tokens.push(Token::Op(Op::Mal));
@@ -262,7 +289,7 @@ impl Modell {
             }
             return;
         }
-        if matches!(self.tokens.last(), Some(Token::Zahl(_))) || self.braucht_mal() {
+        if self.endet_mit_zahl() || self.braucht_mal() {
             self.tokens.push(Token::Op(Op::Mal));
         }
         self.tokens.push(Token::Zahl("0,".to_string()));
@@ -300,7 +327,9 @@ impl Modell {
                     self.tokens[n - 1] = Token::Op(op);
                 }
             }
-            Some(Token::Zahl(_) | Token::Zu | Token::Prozent) => self.tokens.push(Token::Op(op)),
+            Some(Token::Zahl(_) | Token::Wert(_) | Token::Zu | Token::Prozent) => {
+                self.tokens.push(Token::Op(op))
+            }
         }
     }
 
@@ -308,7 +337,7 @@ impl Modell {
         if self.ergebnis.is_some() {
             self.frisch(false);
         }
-        if matches!(self.tokens.last(), Some(Token::Zahl(_))) || self.braucht_mal() {
+        if self.endet_mit_zahl() || self.braucht_mal() {
             self.tokens.push(Token::Op(Op::Mal));
         }
         self.tokens.push(Token::Auf);
@@ -324,7 +353,7 @@ impl Modell {
         }
         if matches!(
             self.tokens.last(),
-            Some(Token::Zahl(_) | Token::Zu | Token::Prozent)
+            Some(Token::Zahl(_) | Token::Wert(_) | Token::Zu | Token::Prozent)
         ) {
             self.tokens.push(Token::Zu);
             self.tippt = false;
@@ -335,7 +364,10 @@ impl Modell {
         if self.ergebnis.is_some() {
             self.frisch(true);
         }
-        if matches!(self.tokens.last(), Some(Token::Zahl(_) | Token::Zu)) {
+        if matches!(
+            self.tokens.last(),
+            Some(Token::Zahl(_) | Token::Wert(_) | Token::Zu)
+        ) {
             self.tokens.push(Token::Prozent);
             self.tippt = false;
         }
@@ -360,7 +392,7 @@ impl Modell {
     }
 
     /// √, x², 1/x: sofort auf Ergebnis, aktuelle Zahl oder geschlossene
-    /// Klammer anwenden.
+    /// Klammer anwenden; das Ergebnis bleibt ungerundet im Ausdruck.
     fn funktion(&mut self, f: fn(f64) -> Result<f64, Fehler>) {
         if self.ergebnis.is_some() {
             self.frisch(true);
@@ -372,6 +404,11 @@ impl Modell {
         let wert = match self.tokens.last() {
             Some(Token::Zahl(z)) => {
                 let x = kern::zahl_lesen(z).unwrap_or(0.0);
+                self.tokens.pop();
+                x
+            }
+            Some(Token::Wert(x)) => {
+                let x = *x;
                 self.tokens.pop();
                 x
             }
@@ -395,9 +432,9 @@ impl Modell {
             }
         };
         match f(wert) {
-            Ok(x) => self.tokens.push(Token::Zahl(kern::formatieren(x))),
+            Ok(x) => self.tokens.push(Token::Wert(x)),
             Err(e) => {
-                self.tokens.push(Token::Zahl(kern::formatieren(wert)));
+                self.tokens.push(Token::Wert(wert));
                 self.ergebnis = Some(Err(e));
             }
         }
@@ -436,6 +473,11 @@ impl Modell {
                 } else {
                     z.insert(0, '-');
                 }
+            }
+            Some(Token::Wert(x)) => {
+                let x = -*x;
+                self.tokens.pop();
+                self.tokens.push(Token::Wert(x));
             }
             Some(Token::Zu) => {
                 // Geschlossene Klammer: Vorzeichen-Minus davor setzen/entfernen.
@@ -502,7 +544,7 @@ impl Modell {
             self.ac();
             return;
         }
-        if matches!(self.tokens.last(), Some(Token::Zahl(_))) {
+        if self.endet_mit_zahl() {
             self.tokens.pop();
         }
         self.tippt = false;
@@ -518,8 +560,10 @@ impl Modell {
         let Some(wert) = self.anzeigewert() else {
             return;
         };
-        let neu = self.speicher.unwrap_or(0.0) + faktor * wert;
-        self.speicher = Some(kern::runden(neu).unwrap_or(neu));
+        let alt = self.speicher.unwrap_or(0.0);
+        // Volle Genauigkeit; Auslöschung (0,1 + 0,2 − 0,3) ergibt 0.
+        let neu = kern::summe(alt, faktor * wert).unwrap_or(alt + faktor * wert);
+        self.speicher = Some(neu);
         // Wie bei gcalctool: der Anzeigewert ist danach abgeschlossen.
         self.tippt = false;
     }
@@ -822,6 +866,75 @@ mod tests {
             "4 × 5",
             "nach eingefügter Zahl: × ergänzt"
         );
+    }
+
+    #[test]
+    fn genauigkeit_ketten() {
+        // QREL-05 R.3 (Werkstatt, kd7.png/kd1.png): 2 √ x² = 2, 1/x = 0,5.
+        assert_eq!(nach("2w").ergebnis, "1,41421356237");
+        assert_eq!(nach("2wq").ergebnis, "2");
+        assert_eq!(nach("2wq").eingabezeile, "2");
+        assert_eq!(nach("2wqk").ergebnis, "0,5");
+        assert_eq!(nach("2wqk*30=").ergebnis, "15");
+        assert_eq!(nach("2wqk*30=").eingabezeile, "0,5 × 30 =");
+        assert_eq!(nach("2=wq").ergebnis, "2", "Funktionen auf Ergebnis");
+        assert_eq!(nach("2wq=").ergebnis, "2");
+        assert_eq!(nach("3kk").ergebnis, "3", "1/x 1/x");
+        assert_eq!(nach("1/3*3=").ergebnis, "1");
+        assert_eq!(nach("1/3=*3=").ergebnis, "1", "Ergebnis bleibt genau");
+        assert_eq!(nach("1/3=*3=").eingabezeile, "0,333333333333 × 3 =");
+        assert_eq!(nach("0,1+0,2=").ergebnis, "0,3");
+        assert_eq!(nach("0,1+0,2=-0,3=").ergebnis, "0", "keine Binärreste");
+        assert_eq!(nach("0,1+0,2-0,3=").ergebnis, "0");
+        assert_eq!(nach("2w+(2w)=q").ergebnis, "8");
+        assert_eq!(nach("2wv").ergebnis, "−1,41421356237");
+        assert_eq!(nach("2wvq").ergebnis, "2", "± auf genauen Wert");
+        assert_eq!(nach("2w%").eingabezeile, "1,41421356237%");
+        // Kopieren wie die Anzeige (gerundet), Rechnen mit vollem Wert.
+        let mut m = Modell::new();
+        tippen(&mut m, "2w");
+        assert_eq!(m.kopierwert(), Some("1,41421356237".to_string()));
+        tippen(&mut m, "q");
+        assert_eq!(m.kopierwert(), Some("2".to_string()));
+        tippen(&mut m, "k");
+        assert_eq!(m.kopierwert(), Some("0,5".to_string()));
+        tippen(&mut m, "=");
+        assert_eq!(m.kopierwert(), Some("0,5".to_string()));
+        // Einfügen behält alle Stellen (hier mehr als die Anzeige).
+        let mut m = Modell::new();
+        assert!(m.einfuegen("1,4142135623730951"));
+        assert_eq!(m.anzeige().ergebnis, "1,41421356237");
+        tippen(&mut m, "q");
+        assert_eq!(m.anzeige().ergebnis, "2");
+    }
+
+    #[test]
+    fn speicher_genau() {
+        let mut m = Modell::new();
+        tippen(&mut m, "2wM a rq");
+        assert_eq!(m.anzeige().ergebnis, "2", "MR liefert den vollen Wert");
+        let mut m = Modell::new();
+        tippen(&mut m, "0,1M a0,2M a0,3m a r");
+        assert_eq!(m.anzeige().ergebnis, "0", "Auslöschung im Speicher");
+        let mut m = Modell::new();
+        tippen(&mut m, "1/3=M a 3*r=");
+        assert_eq!(m.anzeige().ergebnis, "1");
+    }
+
+    #[test]
+    fn ziffer_nach_funktion() {
+        // Unverändert seit 0.1.0: Ziffer nach Funktionsergebnis ergänzt „ד
+        // (Vorbild: gcalctool 5.30 beginnt nur nach Gleich neu).
+        assert_eq!(nach("4w3").eingabezeile, "2 × 3");
+        assert_eq!(nach("4w3=").ergebnis, "6");
+        assert_eq!(nach("4w=3").eingabezeile, "3", "nach Gleich neu");
+        assert_eq!(nach("4w+<").eingabezeile, "2");
+        assert_eq!(
+            nach("4w+<5").eingabezeile,
+            "2 × 5",
+            "Funktionsergebnis ist keine getippte Zahl"
+        );
+        assert_eq!(nach("4wc").eingabezeile, "", "C löscht den Wert");
     }
 
     #[test]
