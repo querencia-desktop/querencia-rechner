@@ -12,7 +12,7 @@ use crate::APP_NAME;
 /// Läge das App-ID-Symbol im Thema zugleich in `48x48` und in einem
 /// Scalable-Verzeichnis, gäbe GTK 4.22 einen Symbolpuffer doppelt frei und
 /// das Programm stürzte beim Schließen eines fokussierten Dialogs ab
-///. Mit nur einem SVG
+/// (GTK-Symbolabsturz, geprüft im Oktober 2026). Mit nur einem SVG
 /// entsteht genau ein Puffer, der Fehler tritt nicht auf.
 const WINDOW_ICON: &str = "org.querencia.Rechner-fenster";
 
