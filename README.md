@@ -25,7 +25,7 @@ Verlauf.
 | `src/fenster.rs` | Fenster, Menüleiste, Tastenfeld, Tastatur, Zwischenablage |
 | `src/dialoge.rs` | Info-Dialog, Fenstersymbol |
 | `data/` | Desktop-Datei, Symbol (nur SVG), Logo C2, eingebettete Ressourcen |
-| `werkzeug/` | isolierte GUI-Prüfung (siehe TESTING.md) |
-| `integration/` | vorbereitetes Integrationsskript (siehe BUILDING.md) |
+| `werkzeug/` | isolierte GUI-Prüfung (siehe docs/TESTING.md) |
+| `integration/` | vorbereitetes Integrationsskript (siehe docs/BUILDING.md) |
 
 Lizenz: GNU GPL, Version 3 oder neuer.
