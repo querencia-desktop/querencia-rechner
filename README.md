@@ -5,6 +5,22 @@ gcalctool im einfachen Modus (GNOME 2.30). Rust + GTK 4 ohne libadwaita,
 Server-Fensterrahmen von labwc (Thema Querencia-Klassisch), Oberfläche
 deutsch und englisch (gettext), App-ID `org.querencia.Rechner`.
 
+> **Alpha.** Nur der einfache Modus; keine Sicherheits- oder
+> Datenverlustgarantie.
+
+## Stand
+
+| | |
+|---|---|
+| Version | 0.1.3 (Tag `rechner/0.1.3`, Vorlage `rechner/0.1.3-1`; ändert gegenüber 0.1.2 nur die Auswahlfarbe der Schrift) |
+| Auf der Entwicklungs-VM | live seit 20.10.2026 |
+| Letzte Prüfung | 20.10.2026: fmt und Clippy sauber, 37/37 Unit-Tests, GUI-Regression 72/72 (1024×768), Sprache Deutsch und Englisch je 9/9 (isoliert) |
+| Getestet auf | Ubuntu 26.04, labwc 0.9.8, GTK 4.22 |
+
+Änderungen je Version: [CHANGELOG.md](CHANGELOG.md).
+
+## Umfang
+
 **Umfang 0.1.0:** Ziffern und Komma, `+ − × ÷` mit Punkt vor Strich und
 Klammern, Prozent, Quadratwurzel, Quadrat, Vorzeichenwechsel, Kehrwert,
 Speicher (M+, M−, MR, MC mit Marke „M“), Rücktaste, C, AC, vollständige
@@ -32,6 +48,11 @@ Verlauf.
 | `werkzeug/` | isolierte GUI-Prüfung (siehe [docs/testing.md](docs/testing.md)), `i18n.py` für die po-Pflege |
 | `integration/` | Integration auf der Entwicklungs-VM (siehe [docs/building.md](docs/building.md)) |
 
+## Bauen und Prüfen
+
+`cargo build --release --locked`, danach `cargo fmt --all --check`, `cargo clippy --all-targets --locked -- -D warnings`, `cargo test --locked` und `python3 werkzeug/i18n.py pruefen`.
+Voraussetzungen, Katalog, Symbol, Integration und die isolierte GUI-Prüfung: [docs/building.md](docs/building.md), [docs/testing.md](docs/testing.md).
+
 ## Sprachen
 
 Seit 0.1.2 sind die Texte englisch im Code (msgid) und deutsch in
@@ -44,8 +65,9 @@ Der Dezimaltrenner bleibt in beiden Sprachen das Komma.
 
 ## Lizenz
 
-GNU GPL, Version 3 oder neuer, siehe [LICENSE](LICENSE). Copyright 2026
-Querencia Desktop contributors. Änderungen: [CHANGELOG.md](CHANGELOG.md).
+GNU GPL, Version 3 oder neuer, siehe [LICENSE](LICENSE) (reiner Lizenztext).
+Copyright 2026 Querencia Desktop contributors; Urheberhinweis in
+[COPYRIGHT](COPYRIGHT).
 Eigener Vermerk: `werkzeug/virtual-keyboard-unstable-v1.xml` (gekürzte Kopie
 des Wayland-Protokolls, Copyright Kristian Høgsberg u. a., MIT-artige
 Lizenz im Dateikopf; nur für das Prüfwerkzeug).
