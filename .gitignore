@@ -2,3 +2,7 @@
 /gui-test
 /laufzeit
 /werkzeug/bin
+# Vorlage der Integration 0.1.2: Binary und Katalog nicht ins Repo
+/integration/vorschlag-012/querencia-rechner
+/integration/vorschlag-012/share/
+__pycache__/

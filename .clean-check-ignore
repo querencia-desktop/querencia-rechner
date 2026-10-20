@@ -14,3 +14,8 @@
 #      Rechenzeichen und Testdaten sind Daten; Kommentare im Projektstil.
 # S005 englische Kommentare in isoliert.py, qeingabe.c, qausgabe.c: Kopien
 #      aus querencia-runtime, Sprache der Herkunft beibehalten.
+# H001/H003 nachweis/: Protokolle und Bilder der Prüfläufe (G2-H, G2-AB,
+#      G2-AH) auf der Entwicklungs-VM; nachweis/ wird im Veröffentlichungsklon
+#      herausgefiltert (ENTSCHEIDUNGEN Nr. 9).
+# S005 werkzeug/eingabe.sh: Kommentar mit englischem Werkzeugbefehl
+#      („key a“, „chord ctrl s“), sonst deutsch.
