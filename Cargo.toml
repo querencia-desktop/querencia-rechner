@@ -1,6 +1,6 @@
 [package]
 name = "querencia-rechner"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2024"
 rust-version = "1.92"
 description = "Querencia Rechner: klassischer Taschenrechner für Querencia Desktop"
@@ -11,6 +11,9 @@ publish = false
 # Dieselben Bindings wie Querencia Editor und Querencia Bilder (gtk-rs 0.11,
 # Cargo.lock vom Editor übernommen, damit der Bau --offline gelingt).
 gtk = { package = "gtk4", version = "0.11", features = ["v4_12"] }
+# Übersetzungen über GNU gettext (po/, .mo unter share/locale). Feature
+# gettext-system: das gettext der glibc statt eines mitgebauten libintl.
+gettext-rs = { version = "0.8", features = ["gettext-system"] }
 
 [profile.release]
 lto = true

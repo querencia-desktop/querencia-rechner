@@ -48,6 +48,8 @@
 
 use std::fmt;
 
+use crate::i18n::gettext;
+
 /// Zweistellige Operatoren.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Op {
@@ -95,20 +97,22 @@ pub enum Fehler {
 }
 
 impl Fehler {
-    pub fn text(self) -> &'static str {
+    /// Anzeigetext (übersetzt).
+    pub fn text(self) -> String {
+        // TRANSLATORS: Fehler in der Ergebniszeile des Rechners.
         match self {
-            Fehler::DivisionDurchNull => "Division durch Null",
-            Fehler::Ueberlauf => "Überlauf",
-            Fehler::NegativeWurzel => "Wurzel aus negativer Zahl",
-            Fehler::Unvollstaendig => "Unvollständiger Ausdruck",
-            Fehler::Ungueltig => "Ungültiger Ausdruck",
+            Fehler::DivisionDurchNull => gettext("Division by zero"),
+            Fehler::Ueberlauf => gettext("Overflow"),
+            Fehler::NegativeWurzel => gettext("Square root of a negative number"),
+            Fehler::Unvollstaendig => gettext("Incomplete expression"),
+            Fehler::Ungueltig => gettext("Invalid expression"),
         }
     }
 }
 
 impl fmt::Display for Fehler {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.write_str(self.text())
+        f.write_str(&self.text())
     }
 }
 
@@ -143,7 +147,7 @@ pub fn summe(a: f64, b: f64) -> Result<f64, Fehler> {
 /// Zahl mit Dezimalkomma für die Anzeige (ASCII-Minus, kein Tausenderpunkt).
 pub fn formatieren(x: f64) -> String {
     if !x.is_finite() {
-        return Fehler::Ueberlauf.text().to_string();
+        return Fehler::Ueberlauf.text();
     }
     if x == 0.0 {
         return "0".to_string();
@@ -515,7 +519,7 @@ mod tests {
         assert_eq!(rechne("*3"), Err(Fehler::Ungueltig));
         assert_eq!(wurzel(-4.0), Err(Fehler::NegativeWurzel));
         assert_eq!(kehrwert(0.0), Err(Fehler::DivisionDurchNull));
-        assert_eq!(Fehler::DivisionDurchNull.text(), "Division durch Null");
+        assert_eq!(Fehler::DivisionDurchNull.text(), "Division by zero");
     }
 
     #[test]
@@ -575,7 +579,7 @@ mod tests {
         assert_eq!(formatieren(-2.5e20), "-2,5e+20");
         assert_eq!(formatieren(1e-10), "1e-10");
         assert_eq!(formatieren(1.23456789012345e-12), "1,23456789012e-12");
-        assert_eq!(formatieren(f64::INFINITY), "Überlauf");
+        assert_eq!(formatieren(f64::INFINITY), "Overflow");
     }
 
     /// 0.1.1: gerundet wird nur noch für die Anzeige (vorher `runden` auf

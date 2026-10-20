@@ -100,7 +100,7 @@ impl Modell {
                 eingabezeile.push_str(" =");
                 (kern::formatieren(x), false)
             }
-            Some(Err(f)) => (f.text().to_string(), true),
+            Some(Err(f)) => (f.text(), true),
             None => (self.aktuelle_zahl_text(), false),
         };
         Anzeige {
@@ -667,9 +667,9 @@ mod tests {
     #[test]
     fn division_durch_null_als_text() {
         let a = nach("5/0=");
-        assert_eq!(a.ergebnis, "Division durch Null");
+        assert_eq!(a.ergebnis, "Division by zero");
         assert!(a.fehler);
-        assert_eq!(nach("0k").ergebnis, "Division durch Null");
+        assert_eq!(nach("0k").ergebnis, "Division by zero");
         // Nach dem Fehler beginnt eine Ziffer neu, ein Operator tut nichts.
         assert_eq!(nach("5/0=7").eingabezeile, "7");
         assert_eq!(nach("5/0=+").eingabezeile, "");
@@ -680,7 +680,7 @@ mod tests {
     #[test]
     fn ueberlauf_als_text() {
         let a = nach("1000000000000qqqqq");
-        assert_eq!(a.ergebnis, "Überlauf");
+        assert_eq!(a.ergebnis, "Overflow");
         assert!(a.fehler);
     }
 
@@ -699,7 +699,7 @@ mod tests {
         assert_eq!(nach("2*(2+7)w=").ergebnis, "6");
         assert_eq!(nach("w").ergebnis, "0", "Wurzel aus nichts = 0");
         let a = nach("4vw");
-        assert_eq!(a.ergebnis, "Wurzel aus negativer Zahl");
+        assert_eq!(a.ergebnis, "Square root of a negative number");
         assert!(a.fehler);
         assert_eq!(nach("16=w").ergebnis, "4", "Funktion auf Ergebnis");
         assert_eq!(nach("16=w").eingabezeile, "4");

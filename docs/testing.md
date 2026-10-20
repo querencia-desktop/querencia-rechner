@@ -4,6 +4,7 @@
 cargo fmt --all --check
 cargo clippy --all-targets --locked --offline -- -D warnings
 cargo test --locked --offline                 # Rechenkern und Modell, ohne Display
+python3 werkzeug/i18n.py pruefen              # Katalog vollständig, .pot aktuell
 ```
 
 GUI nur isoliert (eigener headless labwc 0.9.8, eigener D-Bus, eigenes
@@ -13,7 +14,13 @@ XDG-Profil, virtuelle Eingaben; nie die laufende Sitzung):
 bash werkzeug/bauen.sh                        # einmalig: qeingabe, qausgabe
 bash werkzeug/gui-pruefung.sh 1024x768        # Release-Binary, sonst Debug
 bash werkzeug/gui-pruefung.sh 1920x1080
+QR_LANGUAGE=en bash werkzeug/gui-pruefung.sh 1024x768 <binary> szenario-sprache.sh
 ```
+
+Die Prüfung läuft wie die Sitzung mit `LANG=en_US.UTF-8` und `LANGUAGE=de`
+(`QR_LANGUAGE=en` für Englisch). Ab 0.1.2 braucht die geprüfte Binary den
+Katalog in `<Ordner der Binary>/share/locale`, sonst ist sie englisch und die
+deutschen Anzeigeprüfungen (z. B. „Division durch Null“) scheitern.
 
 Ergebnis je Auflösung in `nachweis/gui/<Auflösung>/`: `ergebnis.txt`
 (PASS/FAIL/BLOCKED), Bilder `01-…png` bis `18-…png`, `rechner.log`

@@ -1,0 +1,20 @@
+[Desktop Entry]
+# Querencia Rechner. Desktop-ID = GApplication-ID org.querencia.Rechner, damit
+# labwc und die Fensterliste Titelleistensymbol und Namen zuordnen. Erscheint
+# über Categories=Utility; im Panel unter „Zubehör“.
+# Vorlage: Name, GenericName, Comment und Keywords sind englisch; die
+# Übersetzungen (Name[de]= …) setzt `werkzeug/i18n.py desktop` aus po/*.po
+# ein (entspricht msgfmt --desktop). Erzeugt: org.querencia.Rechner.desktop.
+Type=Application
+Version=1.5
+Name=Calculator
+GenericName=Calculator
+Comment=Perform arithmetic calculations
+Exec=querencia-rechner
+TryExec=querencia-rechner
+Icon=org.querencia.Rechner
+Terminal=false
+Categories=GTK;Utility;Calculator;
+Keywords=calculator;calc;
+StartupNotify=true
+StartupWMClass=org.querencia.Rechner

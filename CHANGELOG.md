@@ -1,5 +1,20 @@
 # Änderungen
 
+## 0.1.2 – 2026-10-20
+
+Englisch und Deutsch über GNU gettext (G2-AH, Muster Querencia Editor 0.2.0):
+
+- Texte englisch im Code, Deutsch aus `po/de.po` mit dem bisherigen
+  Wortlaut: Menüs (`_Calculator`/`_Rechner`, `_Help`/`_Hilfe`), Tooltips,
+  Fenstertitel („Calculator“/„Taschenrechner“), Info-Dialog, Fehlertexte der
+  Anzeige, Desktop-Datei (englischer Name jetzt „Calculator“).
+- Rechnen, Anzeige, Tastatur und Zwischenablage unverändert; der
+  Dezimaltrenner bleibt das Komma.
+- `werkzeug/i18n.py` für die po-Pflege; GUI-Prüfung mit `QR_LANGUAGE` und
+  neuem Szenario `szenario-sprache.sh`.
+- Doku nach ENTSCHEIDUNGEN Nr. 17 (`docs/building.md`, `docs/testing.md`,
+  Arbeitsregeln), Lizenzkopf (Nr. 14 Q5).
+
 ## 0.1.1 – 2026-10-19
 
 Volle Genauigkeit (G2-AB, Werkstatt-Abnahme QREL-05, FAIL R.3):

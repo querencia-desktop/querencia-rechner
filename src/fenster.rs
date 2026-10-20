@@ -15,6 +15,7 @@ use gtk::prelude::*;
 use gtk::{gdk, gio, glib};
 
 use crate::dialoge;
+use crate::i18n::gettext;
 use crate::modell::{Anzeige, Modell, Taste};
 use crate::rechenkern::Op;
 
@@ -48,17 +49,19 @@ pub fn install_accels(app: &gtk::Application) {
 fn menu_model() -> gio::Menu {
     let rechner = gio::Menu::new();
     let s1 = gio::Menu::new();
-    s1.append(Some("_Kopieren"), Some("win.copy"));
-    s1.append(Some("E_infügen"), Some("win.paste"));
+    // TRANSLATORS: Menüs nach gcalctool 5.30; Zugriffstasten je Menü und in
+    // der Menüleiste verschieden halten.
+    s1.append(Some(&gettext("_Copy")), Some("win.copy"));
+    s1.append(Some(&gettext("_Paste")), Some("win.paste"));
     rechner.append_section(None, &s1);
     let s2 = gio::Menu::new();
-    s2.append(Some("_Beenden"), Some("win.quit"));
+    s2.append(Some(&gettext("_Quit")), Some("win.quit"));
     rechner.append_section(None, &s2);
     let hilfe = gio::Menu::new();
-    hilfe.append(Some("_Info"), Some("win.about"));
+    hilfe.append(Some(&gettext("_About")), Some("win.about"));
     let bar = gio::Menu::new();
-    bar.append_submenu(Some("_Rechner"), &rechner);
-    bar.append_submenu(Some("_Hilfe"), &hilfe);
+    bar.append_submenu(Some(&gettext("_Calculator")), &rechner);
+    bar.append_submenu(Some(&gettext("_Help")), &hilfe);
     bar
 }
 
@@ -109,21 +112,23 @@ const TASTEN: [[(&str, Taste, &str); 5]; 6] = [
 ];
 
 /// Kurzbeschreibung als Tooltip (Hilfe für Maus und Tastatur).
-fn tooltip(taste: Taste) -> Option<&'static str> {
+fn tooltip(taste: Taste) -> Option<String> {
+    // TRANSLATORS: Tooltips der Tasten; die Buchstaben in Klammern sind feste
+    // Tastaturkürzel (s, q, r, v) und bleiben in jeder Sprache gleich.
     Some(match taste {
-        Taste::MC => "Speicher löschen",
-        Taste::MR => "Speicher abrufen",
-        Taste::MMinus => "Vom Speicher abziehen",
-        Taste::MPlus => "Zum Speicher addieren",
-        Taste::Ruecktaste => "Letztes Zeichen löschen (Rücktaste)",
-        Taste::C => "Aktuelle Zahl löschen (Entf)",
-        Taste::AC => "Alles löschen (Escape)",
-        Taste::Wurzel => "Quadratwurzel (s)",
-        Taste::Quadrat => "Quadrat (q)",
-        Taste::Kehrwert => "Kehrwert 1/x (r)",
-        Taste::Vorzeichen => "Vorzeichen wechseln (v)",
-        Taste::Prozent => "Prozent",
-        Taste::Gleich => "Berechnen (Eingabetaste)",
+        Taste::MC => gettext("Clear memory"),
+        Taste::MR => gettext("Recall memory"),
+        Taste::MMinus => gettext("Subtract from memory"),
+        Taste::MPlus => gettext("Add to memory"),
+        Taste::Ruecktaste => gettext("Delete the last character (Backspace)"),
+        Taste::C => gettext("Clear the current number (Delete)"),
+        Taste::AC => gettext("Clear everything (Escape)"),
+        Taste::Wurzel => gettext("Square root (s)"),
+        Taste::Quadrat => gettext("Square (q)"),
+        Taste::Kehrwert => gettext("Reciprocal 1/x (r)"),
+        Taste::Vorzeichen => gettext("Change sign (v)"),
+        Taste::Prozent => gettext("Percent"),
+        Taste::Gleich => gettext("Calculate (Enter)"),
         _ => return None,
     })
 }
@@ -160,7 +165,8 @@ impl Fenster {
         app.set_menubar(Some(&menu_model()));
         let window = gtk::ApplicationWindow::builder()
             .application(app)
-            .title("Taschenrechner")
+            // TRANSLATORS: Fenstertitel wie gcalctool („Calculator“).
+            .title(gettext("Calculator"))
             .resizable(false)
             .show_menubar(true)
             .build();
@@ -223,7 +229,7 @@ impl Fenster {
                 let b = gtk::Button::with_label(text);
                 b.add_css_class(klasse);
                 b.set_focusable(false); // Tastatur geht immer an das Fenster
-                b.set_tooltip_text(tooltip(*taste));
+                b.set_tooltip_text(tooltip(*taste).as_deref());
                 let weak = Rc::downgrade(&fenster);
                 let taste = *taste;
                 b.connect_clicked(move |_| {

@@ -35,6 +35,9 @@ cat >"$PROFIL/config/labwc/rc.xml" <<X
     <windowRule identifier="org.querencia.Rechner" title="Taschenrechner">
       <action name="MoveTo" x="60" y="60" />
     </windowRule>
+    <windowRule identifier="org.querencia.Rechner" title="Calculator">
+      <action name="MoveTo" x="60" y="60" />
+    </windowRule>
   </windowRules>
 </labwc_config>
 X
@@ -47,6 +50,10 @@ R=$R
 X
 sha256sum "$BIN" >"$OUT/binary.sha256"
 SZ=${3:-szenario.sh}
-python3 -I "$E/werkzeug/isoliert.py" "$PROFIL" "$E/werkzeug/$SZ" 300 || true
+# Sprache wie die Sitzung (LANG=en_US.UTF-8, LANGUAGE=de); QR_LANGUAGE=en
+# prüft die englische Oberfläche. Ab 0.1.2 braucht Deutsch den Katalog
+# <Ordner der Binary>/share/locale (oder QUERENCIA_RECHNER_LOCALEDIR).
+echo "Sprache: LANGUAGE=${QR_LANGUAGE:-de}, Katalog: $( [ -d "$(dirname "$BIN")/share/locale" ] && echo "neben der Binary" || echo "${QUERENCIA_RECHNER_LOCALEDIR:-keiner}")" >"$OUT/sprache.txt"
+LANG=en_US.UTF-8 LANGUAGE=${QR_LANGUAGE:-de} python3 -I "$E/werkzeug/isoliert.py" "$PROFIL" "$E/werkzeug/$SZ" 300 || true
 cp "$PROFIL"/logs/*.log "$OUT/" 2>/dev/null || true
 cat "$OUT/ergebnis.txt"

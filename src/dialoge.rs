@@ -5,6 +5,7 @@ use gtk::prelude::*;
 use gtk::{gdk, gio, glib};
 
 use crate::APP_NAME;
+use crate::i18n::{gettext, gettext_f};
 
 /// Name des Fenstersymbols, das GTK labwc schickt (xdg-toplevel-icon).
 ///
@@ -82,7 +83,8 @@ const LOGO_64: &[u8] = include_bytes!("../data/logo/querencia-logo-64.png");
 /// Der Schließen-Knopf hat den Tastaturfokus; Escape und Eingabetaste
 /// schließen.
 pub fn about(parent: &impl IsA<gtk::Window>) {
-    let window = modal_window(parent, &format!("Info zu {APP_NAME}"));
+    // TRANSLATORS: Fenstertitel des Info-Dialogs; {name} ist „Querencia Rechner“.
+    let window = modal_window(parent, &gettext_f("About {name}", &[("name", APP_NAME)]));
     let body = gtk::Box::new(gtk::Orientation::Vertical, 8);
     body.set_halign(gtk::Align::Center);
     if let Ok(texture) = gdk::Texture::from_bytes(&glib::Bytes::from_static(LOGO_64)) {
@@ -95,12 +97,12 @@ pub fn about(parent: &impl IsA<gtk::Window>) {
         "<b><big>{APP_NAME} {}</big></b>",
         env!("CARGO_PKG_VERSION")
     ));
-    let text = gtk::Label::new(Some(
-        "Klassischer Taschenrechner für Querencia Desktop\n\
-         nach dem Vorbild von gcalctool (GNOME 2.30).\n\n\
-         Grundrechenarten, Klammern, Prozent, Wurzel,\n\
-         Quadrat, Kehrwert und Speicher.",
-    ));
+    let text = gtk::Label::new(Some(&gettext(
+        "Classic calculator for Querencia Desktop\n\
+         modelled on gcalctool (GNOME 2.30).\n\n\
+         Basic arithmetic, parentheses, percent, square root,\n\
+         square, reciprocal and memory.",
+    )));
     text.set_justify(gtk::Justification::Center);
     let tech = gtk::Label::new(Some(&format!(
         "GTK {}.{}.{}",
@@ -109,13 +111,13 @@ pub fn about(parent: &impl IsA<gtk::Window>) {
         gtk::micro_version()
     )));
     tech.add_css_class("dim-label");
-    let license = gtk::Label::new(Some("Lizenz: GNU GPL, Version 3 oder neuer"));
+    let license = gtk::Label::new(Some(&gettext("License: GNU GPL, version 3 or later")));
     license.add_css_class("dim-label");
     body.append(&name);
     body.append(&text);
     body.append(&tech);
     body.append(&license);
-    let close = gtk::Button::with_mnemonic("_Schließen");
+    let close = gtk::Button::with_mnemonic(&gettext("_Close"));
     let row = gtk::Box::new(gtk::Orientation::Horizontal, 6);
     row.set_halign(gtk::Align::End);
     row.set_margin_top(12);

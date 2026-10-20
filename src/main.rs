@@ -5,6 +5,8 @@
 //! GTK 4 ohne libadwaita und ohne eigene Titelleiste, damit labwc die
 //! klassische Server-Titelleiste (Thema Querencia-Klassisch) zeichnet.
 //!
+//! Texte über GNU gettext (`i18n`): msgid englisch, Deutsch aus `po/de.po`.
+//!
 //! Aufbau: `rechenkern` (Parser und Arithmetik), `modell` (Tasten und
 //! Zustand), beide ohne GTK und mit Unit-Tests; `fenster` (Oberfläche),
 //! `dialoge` (Info-Dialog, Fenstersymbol).
@@ -17,6 +19,7 @@
 
 mod dialoge;
 mod fenster;
+mod i18n;
 mod modell;
 mod rechenkern;
 
@@ -27,6 +30,7 @@ pub const APP_ID: &str = "org.querencia.Rechner";
 pub const APP_NAME: &str = "Querencia Rechner";
 
 fn main() -> glib::ExitCode {
+    i18n::init();
     if std::env::args().nth(1).as_deref() == Some("--version") {
         println!("{APP_NAME} {}", env!("CARGO_PKG_VERSION"));
         return glib::ExitCode::SUCCESS;

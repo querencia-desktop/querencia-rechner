@@ -1,0 +1,160 @@
+# Querencia Rechner: deutsche Übersetzung.
+# Copyright (C) 2026 Querencia Desktop contributors
+# Diese Datei steht unter derselben Lizenz wie Querencia Rechner (GPL-3.0-or-later).
+# Der Wortlaut entspricht der deutschen Oberfläche bis 0.1.1 (Texte damals im Code).
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: querencia-rechner\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2026-10-20 04:00+0200\n"
+"Last-Translator: Querencia Desktop <147073098+pottrauschen@users.noreply.github.com>\n"
+"Language-Team: Deutsch (Querencia)\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. TRANSLATORS: Desktop-Datei, Schlüssel Name
+#. TRANSLATORS: Desktop-Datei, Schlüssel GenericName
+#. TRANSLATORS: Fenstertitel wie gcalctool („Calculator“).
+#: data/org.querencia.Rechner.desktop.in:10 data/org.querencia.Rechner.desktop.in:11 src/fenster.rs:169
+msgid "Calculator"
+msgstr "Taschenrechner"
+
+#. TRANSLATORS: Desktop-Datei, Schlüssel Comment
+#: data/org.querencia.Rechner.desktop.in:12
+msgid "Perform arithmetic calculations"
+msgstr "Grundrechenarten, Prozent, Wurzel und Speicher"
+
+#. TRANSLATORS: Desktop-Datei, Schlüssel Keywords (Liste, Einträge mit ; trennen und abschließen)
+#: data/org.querencia.Rechner.desktop.in:18
+msgid "calculator;calc;"
+msgstr "Rechner;Taschenrechner;Rechnen;"
+
+#. TRANSLATORS: Fenstertitel des Info-Dialogs; {name} ist „Querencia Rechner“.
+#: src/dialoge.rs:87
+#, no-c-format
+msgid "About {name}"
+msgstr "Info zu {name}"
+
+#: src/dialoge.rs:100
+msgid ""
+"Classic calculator for Querencia Desktop\n"
+"modelled on gcalctool (GNOME 2.30).\n"
+"\n"
+"Basic arithmetic, parentheses, percent, square root,\n"
+"square, reciprocal and memory."
+msgstr ""
+"Klassischer Taschenrechner für Querencia Desktop\n"
+"nach dem Vorbild von gcalctool (GNOME 2.30).\n"
+"\n"
+"Grundrechenarten, Klammern, Prozent, Wurzel,\n"
+"Quadrat, Kehrwert und Speicher."
+
+#: src/dialoge.rs:114
+msgid "License: GNU GPL, version 3 or later"
+msgstr "Lizenz: GNU GPL, Version 3 oder neuer"
+
+#: src/dialoge.rs:120
+msgid "_Close"
+msgstr "_Schließen"
+
+#. TRANSLATORS: Menüs nach gcalctool 5.30; Zugriffstasten je Menü und in der Menüleiste verschieden halten.
+#: src/fenster.rs:54
+msgid "_Copy"
+msgstr "_Kopieren"
+
+#: src/fenster.rs:55
+msgid "_Paste"
+msgstr "E_infügen"
+
+#: src/fenster.rs:58
+msgid "_Quit"
+msgstr "_Beenden"
+
+#: src/fenster.rs:61
+msgid "_About"
+msgstr "_Info"
+
+#: src/fenster.rs:63
+msgid "_Calculator"
+msgstr "_Rechner"
+
+#: src/fenster.rs:64
+msgid "_Help"
+msgstr "_Hilfe"
+
+#: src/fenster.rs:119
+msgid "Clear memory"
+msgstr "Speicher löschen"
+
+#: src/fenster.rs:120
+msgid "Recall memory"
+msgstr "Speicher abrufen"
+
+#: src/fenster.rs:121
+msgid "Subtract from memory"
+msgstr "Vom Speicher abziehen"
+
+#: src/fenster.rs:122
+msgid "Add to memory"
+msgstr "Zum Speicher addieren"
+
+#: src/fenster.rs:123
+msgid "Delete the last character (Backspace)"
+msgstr "Letztes Zeichen löschen (Rücktaste)"
+
+#: src/fenster.rs:124
+msgid "Clear the current number (Delete)"
+msgstr "Aktuelle Zahl löschen (Entf)"
+
+#: src/fenster.rs:125
+msgid "Clear everything (Escape)"
+msgstr "Alles löschen (Escape)"
+
+#: src/fenster.rs:126
+msgid "Square root (s)"
+msgstr "Quadratwurzel (s)"
+
+#: src/fenster.rs:127
+msgid "Square (q)"
+msgstr "Quadrat (q)"
+
+#: src/fenster.rs:128
+msgid "Reciprocal 1/x (r)"
+msgstr "Kehrwert 1/x (r)"
+
+#: src/fenster.rs:129
+msgid "Change sign (v)"
+msgstr "Vorzeichen wechseln (v)"
+
+#: src/fenster.rs:130
+msgid "Percent"
+msgstr "Prozent"
+
+#: src/fenster.rs:131
+msgid "Calculate (Enter)"
+msgstr "Berechnen (Eingabetaste)"
+
+#: src/rechenkern.rs:104
+msgid "Division by zero"
+msgstr "Division durch Null"
+
+#: src/rechenkern.rs:105
+msgid "Overflow"
+msgstr "Überlauf"
+
+#: src/rechenkern.rs:106
+msgid "Square root of a negative number"
+msgstr "Wurzel aus negativer Zahl"
+
+#: src/rechenkern.rs:107
+msgid "Incomplete expression"
+msgstr "Unvollständiger Ausdruck"
+
+#: src/rechenkern.rs:108
+msgid "Invalid expression"
+msgstr "Ungültiger Ausdruck"

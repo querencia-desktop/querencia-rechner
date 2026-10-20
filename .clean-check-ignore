@@ -1,0 +1,16 @@
+# Ausnahmen für ai-clean/clean_check.py (Rechner 0.1.2, G2-AH, 20.10.2026).
+# Bewusst KEINE Pfadeinträge: ein Pfad schaltet für ihn alle Prüfungen ab,
+# auch security. Die begründeten Ausnahmen stehen nur als Kommentar hier:
+#
+# Doku-Standard (ENTSCHEIDUNGEN Nr. 17): CHANGELOG.md bleibt im Root
+#      (GitHub-Vorlage); CONTRIBUTING.md, SECURITY.md, MARKE.md kommen mit dem
+#      Vorlagen-Commit des Veröffentlichungsklons und bleiben dann im Root.
+# P002 Co-Authored-By in den Commit-Texten: bleibt im Arbeitsrepo; der
+#      Veröffentlichungsklon entfernt die Zeilen (ENTSCHEIDUNGEN Nr. 10).
+# H003 werkzeug/virtual-keyboard-unstable-v1.xml: „-v1“ ist die Version des
+#      Wayland-Protokolls (Upstream-Name).
+# S003 Backticks um Bezeichner in Kommentaren: rustdoc-Konvention.
+# S004 Typografie („“, –, …, ×, ÷, −): deutsche Oberflächentexte, po-Kataloge,
+#      Rechenzeichen und Testdaten sind Daten; Kommentare im Projektstil.
+# S005 englische Kommentare in isoliert.py, qeingabe.c, qausgabe.c: Kopien
+#      aus querencia-runtime, Sprache der Herkunft beibehalten.
