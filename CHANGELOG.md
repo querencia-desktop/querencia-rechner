@@ -1,5 +1,16 @@
 # Änderungen
 
+## 0.1.3 – 2026-10-20
+
+Dunkle Auswahlschrift (CSS-Welle, passend zum GTK-Thema Querencia-Klassisch,
+Entscheidung 20.10.):
+
+- Menüleiste, Menüeinträge und Taste „=“ schreiben `#1a1a1a` statt `#ffffff`
+  auf den orangen Verlauf. Kontrast 6,2:1 (unten, `#f07746`) bis 8,5:1 (oben,
+  `#f6a179`), bei „=“ unter dem Zeiger 6,8:1, gedrückt 5,1:1; mit Weiß waren
+  es 1,8:1 bis 3,4:1. Verläufe und alles Übrige unverändert; Texte und
+  Katalog unverändert.
+
 ## 0.1.2 – 2026-10-20
 
 Englisch und Deutsch über GNU gettext (G2-AH, Muster Querencia Editor 0.2.0):

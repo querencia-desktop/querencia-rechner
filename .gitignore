@@ -6,3 +6,6 @@
 /integration/vorschlag-012/querencia-rechner
 /integration/vorschlag-012/share/
 __pycache__/
+# Vorlage der Integration 0.1.3: Binary und Katalog nicht ins Repo
+/integration/vorschlag-013/querencia-rechner
+/integration/vorschlag-013/share/

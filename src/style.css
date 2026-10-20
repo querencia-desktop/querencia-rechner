@@ -16,7 +16,7 @@ window.qr-window menubar > item {
 window.qr-window menubar > item:hover,
 window.qr-window menubar > item:selected {
   background-image: linear-gradient(to bottom, #f6a179, #f07746);
-  color: #ffffff;
+  color: #1a1a1a;
 }
 
 window.qr-window popover.menu contents {
@@ -34,7 +34,7 @@ window.qr-window popover.menu modelbutton {
 window.qr-window popover.menu modelbutton:hover,
 window.qr-window popover.menu modelbutton:selected {
   background-image: linear-gradient(to bottom, #f6a179, #f07746);
-  color: #ffffff;
+  color: #1a1a1a;
 }
 
 /* Anzeige: weißes Feld mit eingelassenem Rand wie ein LCD-Rahmen */
@@ -95,7 +95,7 @@ grid.qr-tasten button.qr-op {
 
 grid.qr-tasten button.qr-gleich {
   background-image: linear-gradient(to bottom, #f6a179, #f07746);
-  color: #ffffff;
+  color: #1a1a1a;
   font-weight: bold;
   font-size: 14pt;
   border-color: #c6602f;
