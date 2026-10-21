@@ -12,8 +12,8 @@ deutsch und englisch (gettext), App-ID `org.querencia.Rechner`.
 
 | | |
 |---|---|
-| Version | 0.1.4 (Zweig `v0.1.4`; dunkle Darstellung für Querencia-Klassisch 0.2, hell unverändert gegenüber 0.1.3) |
-| Auf der Entwicklungs-VM | 0.1.3 live seit 20.10.2026; 0.1.4 nicht aktiv (Aktivierung mit der CSS-Welle dunkel und Thema 0.2) |
+| Version | 0.1.5 (Zweig `v0.1.5`; Speichermarke hell lesbar, sonst wie 0.1.4 mit dunkler Darstellung für Querencia-Klassisch 0.2) |
+| Auf der Entwicklungs-VM | 0.1.4-2 live seit 21.10.2026 10:26; 0.1.5 nicht aktiv (Freigabe durch die Status-Session) |
 | Letzte Prüfung | 21.10.2026: fmt und Clippy sauber, 37/37 Unit-Tests, i18n PASS; isoliert hell 64/64 Bilder pixelgleich zu 0.1.3 (de/en, 1024×768/1920×1080, Thema 0.1 und 0.2), Wechsel hell/dunkel 48/48, Kontrast dunkel 112/112 AA |
 | Getestet auf | Ubuntu 26.04, labwc 0.9.8, GTK 4.22 |
 

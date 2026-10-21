@@ -8,7 +8,11 @@
    dark) am Ende. Er wirkt nur, weil fenster::load_css den eigenen
    CssProvider an gtk-interface-color-scheme bindet. Die Anzeige wechselt
    als Ganzes (Grund, Rand und alle Schriften im Block), damit Grund und
-   Schrift nie aus verschiedenen Quellen kommen. */
+   Schrift nie aus verschiedenen Quellen kommen.
+
+   Speichermarke „M“ (0.1.5): hell #b33c0b (Verweisfarbe des Themas, 5,9:1
+   auf Weiß; #f07746 hatte 2,8:1), dunkel weiter #f07746 (5,1:1 auf #2b2a27)
+   im Block unten. */
 
 window.qr-window menubar {
   padding: 1px 2px;
@@ -71,7 +75,7 @@ label.qr-speicher {
   font-family: "DejaVu Sans", sans-serif;
   font-size: 9pt;
   font-weight: bold;
-  color: #f07746;
+  color: #b33c0b;
   min-width: 14px;
 }
 
@@ -125,8 +129,9 @@ window.qr-dialog button {
 /* Dunkle Fassung (Thema 0.2, Ambiance-Zuordnung): Anzeige wie eine Ansicht
    des Themas (#2b2a27, Rand #23221f), Schrift #f2f1f0, Eingabezeile
    gedämpft #a8a29d (5,7:1), Fehler #ed8b85 (5,9:1). Rot der Löschtasten
-   heller #f9c3be (4,8:1 auf dem Knopfverlauf oben #57554f). Speicheranzeige
-   und Taste „=“ bleiben orange. */
+   heller #f9c3be (4,8:1 auf dem Knopfverlauf oben #57554f). Speichermarke
+   im Akzent #f07746 (5,1:1, seit 0.1.5 hier, weil hell dunkler) und Taste „=“
+   bleiben orange. */
 @media (prefers-color-scheme: dark) {
   box.qr-anzeige {
     background-color: #2b2a27;
@@ -143,6 +148,10 @@ window.qr-dialog button {
 
   label.qr-ergebnis.qr-fehler {
     color: #ed8b85;
+  }
+
+  label.qr-speicher {
+    color: #f07746;
   }
 
   grid.qr-tasten button.qr-loeschen {

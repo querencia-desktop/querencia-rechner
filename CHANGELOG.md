@@ -1,5 +1,17 @@
 # Änderungen
 
+## 0.1.5 – 2026-10-21
+
+Lesbare Speichermarke im hellen Modus (Kontrast-Sammelauftrag hell, QD-089):
+
+- Die Speichermarke „M“ in der Anzeige schreibt hell `#b33c0b` (Verweisfarbe
+  von Querencia-Klassisch) statt `#f07746`: 5,9:1 auf Weiß statt 2,8:1
+  (seit 0.1.0 unter AA).
+- Dunkel unverändert `#f07746` auf `#2b2a27` (5,1:1); die Farbe steht jetzt
+  ausdrücklich im Block `@media (prefers-color-scheme: dark)`.
+- Sonst keine Änderung: übrige Farben, Texte, Katalog, Symbol und Rechnen wie
+  0.1.4.
+
 ## 0.1.4 – 2026-10-21
 
 Dunkle Darstellung (CSS-Welle dunkel, QD-081; für Querencia-Klassisch 0.2):
