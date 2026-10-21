@@ -2,7 +2,7 @@
 
 ## 0.1.5 – 2026-10-21
 
-Lesbare Speichermarke im hellen Modus (Kontrast-Sammelauftrag hell, QD-089):
+Lesbare Speichermarke im hellen Modus:
 
 - Die Speichermarke „M“ in der Anzeige schreibt hell `#b33c0b` (Verweisfarbe
   von Querencia-Klassisch) statt `#f07746`: 5,9:1 auf Weiß statt 2,8:1
@@ -14,7 +14,7 @@ Lesbare Speichermarke im hellen Modus (Kontrast-Sammelauftrag hell, QD-089):
 
 ## 0.1.4 – 2026-10-21
 
-Dunkle Darstellung (CSS-Welle dunkel, QD-081; für Querencia-Klassisch 0.2):
+Dunkle Darstellung (CSS-Welle dunkel, für Querencia-Klassisch 0.2):
 
 - Der Rechner folgt „Dunkle Darstellung bevorzugen“ beim Start und beim
   Wechsel im Lauf. Beim Start meldet er `gtk-interface-color-scheme` einmal
@@ -43,7 +43,7 @@ Entscheidung 20.10.):
 
 ## 0.1.2 – 2026-10-20
 
-Englisch und Deutsch über GNU gettext (G2-AH, Muster Querencia Editor 0.2.0):
+Englisch und Deutsch über GNU gettext (Muster Querencia Editor 0.2.0):
 
 - Texte englisch im Code, Deutsch aus `po/de.po` mit dem bisherigen
   Wortlaut: Menüs (`_Calculator`/`_Rechner`, `_Help`/`_Hilfe`), Tooltips,
@@ -57,7 +57,7 @@ Englisch und Deutsch über GNU gettext (G2-AH, Muster Querencia Editor 0.2.0):
 
 ## 0.1.1 – 2026-10-19
 
-Volle Genauigkeit (G2-AB, Werkstatt-Abnahme QREL-05, FAIL R.3):
+Volle Genauigkeit:
 
 - Der Rechenkern rechnet intern mit voller `f64`-Genauigkeit weiter. Bisher
   wurden Ergebnisse und die Funktionen √, x², 1/x auf 12 Stellen gerundet und
@@ -76,6 +76,6 @@ Volle Genauigkeit (G2-AB, Werkstatt-Abnahme QREL-05, FAIL R.3):
 
 ## 0.1.0 – 2026-10-18
 
-Erste Fassung (G2-H, AP-10a): einfacher Modus nach gcalctool 5.30 – Grundrechenarten mit
+Erste Fassung: einfacher Modus nach gcalctool 5.30 – Grundrechenarten mit
 Punkt vor Strich und Klammern, Prozent, Wurzel, Quadrat, Vorzeichen, Kehrwert,
 Speicher, Tastaturbedienung mit Ziffernblock, Zwischenablage, Info-Dialog.
