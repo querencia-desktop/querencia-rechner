@@ -43,6 +43,13 @@ fn main() -> glib::ExitCode {
         dialoge::register_window_icon();
         fenster::load_css();
         fenster::install_accels(app);
+        // QD-081: GTK 4.22 wendet ein beim Start schon dunkles Farbschema
+        // nicht auf das Thema an (load_named setzt es zurück); ein Neustart
+        // bliebe hell. Die Meldung überträgt den Wert einmal neu (hell
+        // unverändert).
+        if let Some(s) = gtk::Settings::default() {
+            s.notify("gtk-interface-color-scheme");
+        }
     });
     app.connect_activate(|app| fenster::Fenster::get(app).present());
     app.run()
