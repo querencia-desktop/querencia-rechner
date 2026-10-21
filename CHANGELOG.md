@@ -53,8 +53,7 @@ Englisch und Deutsch über GNU gettext (G2-AH, Muster Querencia Editor 0.2.0):
   Dezimaltrenner bleibt das Komma.
 - `werkzeug/i18n.py` für die po-Pflege; GUI-Prüfung mit `QR_LANGUAGE` und
   neuem Szenario `szenario-sprache.sh`.
-- Doku nach ENTSCHEIDUNGEN Nr. 17 (`docs/building.md`, `docs/testing.md`,
-  Arbeitsregeln), Lizenzkopf (Nr. 14 Q5).
+- Doku unter `docs/` (`docs/building.md`, `docs/testing.md`), Lizenzkopf.
 
 ## 0.1.1 – 2026-10-19
 
