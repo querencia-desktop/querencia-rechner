@@ -1,5 +1,23 @@
 # Änderungen
 
+## 0.1.4 – 2026-10-21
+
+Dunkle Darstellung (CSS-Welle dunkel, QD-081; für Querencia-Klassisch 0.2):
+
+- Der Rechner folgt „Dunkle Darstellung bevorzugen“ beim Start und beim
+  Wechsel im Lauf. Beim Start meldet er `gtk-interface-color-scheme` einmal
+  neu (GTK 4.22 wendet ein schon dunkles Farbschema sonst nicht auf das Thema
+  an).
+- Menüleiste und Menüs ohne eigene Farben: Grund, Rand und Schrift kommen
+  vom Thema (hell dieselben Werte wie bisher).
+- Anzeige und Löschtasten haben eine dunkle Fassung im Block
+  `@media (prefers-color-scheme: dark)`: Anzeige `#2b2a27` mit Rand
+  `#23221f`, Ergebnis `#f2f1f0`, Eingabezeile `#a8a29d`, Fehlertext
+  `#ed8b85`, Löschtasten `#f9c3be` (alle mindestens 4,5:1). Dafür ist der
+  eigene CSS-Provider an `gtk-interface-color-scheme` gebunden (ohne Bindung
+  wirkt der Block nie, isoliert gemessen). Die Anzeige wechselt als Ganzes.
+- Hell unverändert; Texte, Katalog und Rechnen unverändert.
+
 ## 0.1.3 – 2026-10-20
 
 Dunkle Auswahlschrift (CSS-Welle, passend zum GTK-Thema Querencia-Klassisch,

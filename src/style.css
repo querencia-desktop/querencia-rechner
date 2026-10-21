@@ -1,16 +1,22 @@
 /* Querencia Rechner – klassische Optik (Ambiance-Farbwerte wie Panel, Editor
-   und Bilder; Akzent #F07746). */
+   und Bilder; Akzent #F07746).
+
+   Hell und dunkel (0.1.4): Menüleiste und Menüs zeichnet das Thema
+   Querencia-Klassisch selbst (hell dieselben Werte, die früher hier fest
+   standen). Anzeige und Löschtasten haben eigene Farben ohne Gegenstück im
+   Thema; ihre dunklen Werte stehen im Block @media (prefers-color-scheme:
+   dark) am Ende. Er wirkt nur, weil fenster::load_css den eigenen
+   CssProvider an gtk-interface-color-scheme bindet. Die Anzeige wechselt
+   als Ganzes (Grund, Rand und alle Schriften im Block), damit Grund und
+   Schrift nie aus verschiedenen Quellen kommen. */
 
 window.qr-window menubar {
-  background-color: #f2f1f0;
-  border-bottom: 1px solid #c7c2be;
   padding: 1px 2px;
 }
 
 window.qr-window menubar > item {
   padding: 3px 8px;
   border-radius: 0;
-  color: #3c3c3c;
 }
 
 window.qr-window menubar > item:hover,
@@ -22,8 +28,6 @@ window.qr-window menubar > item:selected {
 window.qr-window popover.menu contents {
   border-radius: 0;
   padding: 2px 0;
-  background-color: #f5f4f2;
-  border: 1px solid #c7c2be;
 }
 
 window.qr-window popover.menu modelbutton {
@@ -116,4 +120,32 @@ grid.qr-tasten button.qr-loeschen {
 window.qr-dialog button {
   border-radius: 2px;
   min-width: 80px;
+}
+
+/* Dunkle Fassung (Thema 0.2, Ambiance-Zuordnung): Anzeige wie eine Ansicht
+   des Themas (#2b2a27, Rand #23221f), Schrift #f2f1f0, Eingabezeile
+   gedämpft #a8a29d (5,7:1), Fehler #ed8b85 (5,9:1). Rot der Löschtasten
+   heller #f9c3be (4,8:1 auf dem Knopfverlauf oben #57554f). Speicheranzeige
+   und Taste „=“ bleiben orange. */
+@media (prefers-color-scheme: dark) {
+  box.qr-anzeige {
+    background-color: #2b2a27;
+    border-color: #23221f;
+  }
+
+  label.qr-eingabezeile {
+    color: #a8a29d;
+  }
+
+  label.qr-ergebnis {
+    color: #f2f1f0;
+  }
+
+  label.qr-ergebnis.qr-fehler {
+    color: #ed8b85;
+  }
+
+  grid.qr-tasten button.qr-loeschen {
+    color: #f9c3be;
+  }
 }

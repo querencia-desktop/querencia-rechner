@@ -12,9 +12,9 @@ deutsch und englisch (gettext), App-ID `org.querencia.Rechner`.
 
 | | |
 |---|---|
-| Version | 0.1.3 (Tag `rechner/0.1.3`, Vorlage `rechner/0.1.3-1`; ändert gegenüber 0.1.2 nur die Auswahlfarbe der Schrift) |
-| Auf der Entwicklungs-VM | live seit 20.10.2026 |
-| Letzte Prüfung | 20.10.2026: fmt und Clippy sauber, 37/37 Unit-Tests, GUI-Regression 72/72 (1024×768), Sprache Deutsch und Englisch je 9/9 (isoliert) |
+| Version | 0.1.4 (Zweig `v0.1.4`; dunkle Darstellung für Querencia-Klassisch 0.2, hell unverändert gegenüber 0.1.3) |
+| Auf der Entwicklungs-VM | 0.1.3 live seit 20.10.2026; 0.1.4 nicht aktiv (Aktivierung mit der CSS-Welle dunkel und Thema 0.2) |
+| Letzte Prüfung | 21.10.2026: fmt und Clippy sauber, 37/37 Unit-Tests, i18n PASS; isoliert hell 64/64 Bilder pixelgleich zu 0.1.3 (de/en, 1024×768/1920×1080, Thema 0.1 und 0.2), Wechsel hell/dunkel 48/48, Kontrast dunkel 112/112 AA |
 | Getestet auf | Ubuntu 26.04, labwc 0.9.8, GTK 4.22 |
 
 Änderungen je Version: [CHANGELOG.md](CHANGELOG.md).
