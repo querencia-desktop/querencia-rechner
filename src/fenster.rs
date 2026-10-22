@@ -77,7 +77,15 @@ fn menu_model() -> gio::Menu {
     s2.append(Some(&gettext("_Quit")), Some("win.quit"));
     rechner.append_section(None, &s2);
     let hilfe = gio::Menu::new();
-    hilfe.append(Some(&gettext("_About")), Some("win.about"));
+    let h1 = gio::Menu::new();
+    // TRANSLATORS: Hilfe-Menü; Online-Hilfe und Fehlermeldung öffnen der
+    // Browser. Zugriffstasten im Menü verschieden halten.
+    h1.append(Some(&gettext("Online _Help")), Some("win.online-hilfe"));
+    h1.append(Some(&gettext("_Report a Bug")), Some("win.fehler-melden"));
+    hilfe.append_section(None, &h1);
+    let h2 = gio::Menu::new();
+    h2.append(Some(&gettext("_About")), Some("win.about"));
+    hilfe.append_section(None, &h2);
     let bar = gio::Menu::new();
     bar.append_submenu(Some(&gettext("_Calculator")), &rechner);
     bar.append_submenu(Some(&gettext("_Help")), &hilfe);
@@ -339,6 +347,14 @@ impl Fenster {
         add("copy", Box::new(|s| s.kopieren()));
         add("paste", Box::new(|s| s.einfuegen()));
         add("quit", Box::new(|s| s.window.close()));
+        add(
+            "online-hilfe",
+            Box::new(|s| dialoge::open_uri(&s.window, &dialoge::online_hilfe())),
+        );
+        add(
+            "fehler-melden",
+            Box::new(|s| dialoge::open_uri(&s.window, dialoge::FEHLER_MELDEN)),
+        );
         add("about", Box::new(|s| dialoge::about(&s.window)));
     }
 

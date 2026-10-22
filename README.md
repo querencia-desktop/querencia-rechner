@@ -12,8 +12,8 @@ deutsch und englisch (gettext), App-ID `org.querencia.Rechner`.
 
 | | |
 |---|---|
-| Version | 0.1.5 (Zweig `v0.1.5`; Speichermarke hell lesbar, sonst wie 0.1.4 mit dunkler Darstellung für Querencia-Klassisch 0.2) |
-| Auf der Entwicklungs-VM | 0.1.4-2 live seit 21.10.2026 10:26; 0.1.5 nicht aktiv (Freigabe durch die Status-Session) |
+| Version | 0.1.6 (Zweig `rechner-qd120`; Info-Dialog mit Alpha-Hinweis, Website, Copyright und Lizenz, Hilfe-Menü mit Online-Hilfe und Fehler melden; sonst wie 0.1.5) |
+| Auf der Entwicklungs-VM | 0.1.5 live seit 21.10.2026 18:01; 0.1.6 nicht aktiv (Freigabe durch die Status-Session) |
 | Letzte Prüfung | 21.10.2026 (0.1.5): fmt und Clippy sauber, 37/37 Unit-Tests, i18n PASS; isoliert gegen 0.1.4-2 (de 1024×768, en 1920×1080, Thema 0.2): dunkel 22/22 Bilder pixelgleich, hell 22/22 gleich oder nur die Speichermarke, Wechsel 12/12; Speichermarke hell 5,9:1, dunkel 5,1:1 |
 | Getestet auf | Ubuntu 26.04, labwc 0.9.8, GTK 4.22 |
 

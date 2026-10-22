@@ -4,7 +4,6 @@
 use gtk::prelude::*;
 use gtk::{gdk, gio, glib};
 
-use crate::APP_NAME;
 use crate::i18n::{gettext, gettext_f};
 
 /// Name des Fenstersymbols, das GTK labwc schickt (xdg-toplevel-icon).
@@ -79,12 +78,35 @@ fn close_on_escape(window: &gtk::Window) {
 
 const LOGO_64: &[u8] = include_bytes!("../data/logo/querencia-logo-64.png");
 
-/// „Info“: offizielles Querencia-Logo C2 (das Q), Name, Version, Lizenz.
-/// Der Schließen-Knopf hat den Tastaturfokus; Escape und Eingabetaste
-/// schließen.
+/// Website von Querencia Desktop (Info-Dialog).
+const WEBSITE: &str = "https://querencialinux.org";
+/// Neue Fehlermeldung im gemeinsamen Repo (Hilfe → Fehler melden).
+pub const FEHLER_MELDEN: &str = "https://github.com/querencia-desktop/querencia/issues/new/choose";
+
+/// Adresse der Online-Hilfe in der Sprache der Oberfläche: Die Adresse steht
+/// selbst im Katalog, gettext wählt sie wie jeden Text nach der Locale
+/// (ohne Katalog Englisch).
+pub fn online_hilfe() -> String {
+    // TRANSLATORS: Adresse der Online-Hilfe; nur das Sprachkürzel anpassen
+    // (deutsch …/de/docs/).
+    gettext("https://querencialinux.org/en/docs/")
+}
+
+/// Öffnet `uri` mit dem Standardprogramm der Sitzung (wie xdg-open).
+pub fn open_uri(parent: &impl IsA<gtk::Window>, uri: &str) {
+    let context = WidgetExt::display(parent.as_ref()).app_launch_context();
+    if let Err(err) = gio::AppInfo::launch_default_for_uri(uri, Some(&context)) {
+        eprintln!("querencia-rechner: {uri} nicht geöffnet: {err}");
+    }
+}
+
+/// „Info“: offizielles Querencia-Logo C2 (das Q), Name, Version, Hinweis
+/// auf die Alpha, Website, Copyright und Lizenz. Der Schließen-Knopf hat den
+/// Tastaturfokus; Escape und Eingabetaste schließen.
 pub fn about(parent: &impl IsA<gtk::Window>) {
-    // TRANSLATORS: Fenstertitel des Info-Dialogs; {name} ist „Querencia Rechner“.
-    let window = modal_window(parent, &gettext_f("About {name}", &[("name", APP_NAME)]));
+    // TRANSLATORS: Fenstertitel des Info-Dialogs; deutsch mit dem Eigennamen
+    // „Querencia Rechner“, englisch mit dem Namen aus dem Menü.
+    let window = modal_window(parent, &gettext("About Calculator"));
     let body = gtk::Box::new(gtk::Orientation::Vertical, 8);
     body.set_halign(gtk::Align::Center);
     if let Ok(texture) = gdk::Texture::from_bytes(&glib::Bytes::from_static(LOGO_64)) {
@@ -93,9 +115,15 @@ pub fn about(parent: &impl IsA<gtk::Window>) {
         body.append(&image);
     }
     let name = gtk::Label::new(None);
+    // TRANSLATORS: Programmname und Version im Info-Dialog; deutsch
+    // „Querencia Rechner {version}“.
+    let titel = gettext_f(
+        "Calculator {version}",
+        &[("version", env!("CARGO_PKG_VERSION"))],
+    );
     name.set_markup(&format!(
-        "<b><big>{APP_NAME} {}</big></b>",
-        env!("CARGO_PKG_VERSION")
+        "<b><big>{}</big></b>",
+        glib::markup_escape_text(&titel)
     ));
     let text = gtk::Label::new(Some(&gettext(
         "Classic calculator for Querencia Desktop\n\
@@ -104,6 +132,7 @@ pub fn about(parent: &impl IsA<gtk::Window>) {
          square, reciprocal and memory.",
     )));
     text.set_justify(gtk::Justification::Center);
+    let alpha = gtk::Label::new(Some(&gettext("Alpha – not released for everyday use.")));
     let tech = gtk::Label::new(Some(&format!(
         "GTK {}.{}.{}",
         gtk::major_version(),
@@ -111,11 +140,26 @@ pub fn about(parent: &impl IsA<gtk::Window>) {
         gtk::micro_version()
     )));
     tech.add_css_class("dim-label");
-    let license = gtk::Label::new(Some(&gettext("License: GNU GPL, version 3 or later")));
+    let website = gtk::Label::new(None);
+    website.set_markup(&format!("<a href=\"{WEBSITE}\">querencialinux.org</a>"));
+    // Wie die Einträge im Hilfe-Menü über GIO statt über das Portal öffnen.
+    let w = window.downgrade();
+    website.connect_activate_link(move |_, uri| {
+        if let Some(w) = w.upgrade() {
+            open_uri(&w, uri);
+        }
+        glib::Propagation::Stop
+    });
+    let copyright = gtk::Label::new(Some("© 2026 Querencia Desktop contributors"));
+    copyright.add_css_class("dim-label");
+    let license = gtk::Label::new(Some(&gettext("License: GPL-3.0-or-later")));
     license.add_css_class("dim-label");
     body.append(&name);
     body.append(&text);
+    body.append(&alpha);
     body.append(&tech);
+    body.append(&website);
+    body.append(&copyright);
     body.append(&license);
     let close = gtk::Button::with_mnemonic(&gettext("_Close"));
     let row = gtk::Box::new(gtk::Orientation::Horizontal, 6);

@@ -1,5 +1,20 @@
 # Änderungen
 
+## 0.1.6 – 2026-10-22
+
+Info-Dialog und Hilfe-Menü wie in den übrigen Querencia-Programmen:
+
+- Der Info-Dialog nennt den Stand „Alpha – nicht für den Alltag
+  freigegeben“, die Website querencialinux.org, die Zeile
+  „© 2026 Querencia Desktop contributors“ und die Lizenz GPL-3.0-or-later.
+  Englisch heißt er „About Calculator“ (wie im Anwendungsmenü), deutsch
+  weiter „Info zu Querencia Rechner“.
+- Das Hilfe-Menü hat zwei neue Einträge: „Online-Hilfe“ öffnet
+  querencialinux.org/de/docs/ (englische Oberfläche: /en/docs/), „Fehler
+  melden“ die Seite für neue Fehlermeldungen auf GitHub; beides mit dem
+  Standardbrowser der Sitzung.
+- Katalog ohne interne Kennungen.
+
 ## 0.1.5 – 2026-10-21
 
 Lesbare Speichermarke im hellen Modus (Kontrast-Sammelauftrag hell, QD-089):
