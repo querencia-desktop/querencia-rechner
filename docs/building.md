@@ -31,8 +31,8 @@ Scalable-Verzeichnis, stürzt GTK 4.22 beim Schließen fokussierter Dialoge ab
 zusätzlich unter dem Namen `org.querencia.Rechner-fenster` als Ressource
 eingebettet (`werkzeug/ressourcen.sh` erzeugt `data/resource/rechner.gresource`).
 
-**Integration (nur auf der Entwicklungs-VM, nicht Teil der Veröffentlichung):**
-Die Live-Integration in die Querencia-Sitzung der Entwicklungs-VM erledigen
+**Integration (nur in der Entwicklungsumgebung, nicht Teil der Veröffentlichung):**
+Die Live-Integration in die Querencia-Sitzung der Entwicklungsumgebung erledigen
 Skripte unter `integration/` (`pruefen|aktivieren|zurueck`, unveränderliche
 Ablage `~/opt/querencia/rechner/<sha16>/`, Link `~/opt/querencia/bin/querencia-rechner`,
 Starter). Der Ordner enthält feste Pfade der VM und wird vor der

@@ -20,7 +20,7 @@ msgstr ""
 #. TRANSLATORS: Desktop-Datei, Schlüssel Name
 #. TRANSLATORS: Desktop-Datei, Schlüssel GenericName
 #. TRANSLATORS: Fenstertitel wie gcalctool („Calculator“).
-#: data/org.querencia.Rechner.desktop.in:10 data/org.querencia.Rechner.desktop.in:11 src/fenster.rs:169
+#: data/org.querencia.Rechner.desktop.in:10 data/org.querencia.Rechner.desktop.in:11 src/fenster.rs:196
 msgid "Calculator"
 msgstr ""
 
@@ -34,13 +34,23 @@ msgstr ""
 msgid "calculator;calc;"
 msgstr ""
 
-#. TRANSLATORS: Fenstertitel des Info-Dialogs; {name} ist „Querencia Rechner“.
-#: src/dialoge.rs:87
-#, no-c-format
-msgid "About {name}"
+#. TRANSLATORS: Adresse der Online-Hilfe; nur das Sprachkürzel anpassen (deutsch …/de/docs/).
+#: src/dialoge.rs:92
+msgid "https://querencialinux.org/en/docs/"
 msgstr ""
 
-#: src/dialoge.rs:100
+#. TRANSLATORS: Fenstertitel des Info-Dialogs; deutsch mit dem Eigennamen „Querencia Rechner“, englisch mit dem Namen aus dem Menü.
+#: src/dialoge.rs:109
+msgid "About Calculator"
+msgstr ""
+
+#. TRANSLATORS: Programmname und Version im Info-Dialog; deutsch „Querencia Rechner {version}“.
+#: src/dialoge.rs:120
+#, no-c-format
+msgid "Calculator {version}"
+msgstr ""
+
+#: src/dialoge.rs:128
 msgid ""
 "Classic calculator for Querencia Desktop\n"
 "modelled on gcalctool (GNOME 2.30).\n"
@@ -49,88 +59,101 @@ msgid ""
 "square, reciprocal and memory."
 msgstr ""
 
-#: src/dialoge.rs:114
-msgid "License: GNU GPL, version 3 or later"
+#: src/dialoge.rs:135
+msgid "Alpha – not released for everyday use."
 msgstr ""
 
-#: src/dialoge.rs:120
+#: src/dialoge.rs:155
+msgid "License: GPL-3.0-or-later"
+msgstr ""
+
+#: src/dialoge.rs:164
 msgid "_Close"
 msgstr ""
 
 #. TRANSLATORS: Menüs nach gcalctool 5.30; Zugriffstasten je Menü und in der Menüleiste verschieden halten.
-#: src/fenster.rs:54
+#: src/fenster.rs:73
 msgid "_Copy"
 msgstr ""
 
-#: src/fenster.rs:55
+#: src/fenster.rs:74
 msgid "_Paste"
 msgstr ""
 
-#: src/fenster.rs:58
+#: src/fenster.rs:77
 msgid "_Quit"
 msgstr ""
 
-#: src/fenster.rs:61
+#. TRANSLATORS: Hilfe-Menü; Online-Hilfe und Fehlermeldung öffnen der Browser. Zugriffstasten im Menü verschieden halten.
+#: src/fenster.rs:83
+msgid "Online _Help"
+msgstr ""
+
+#: src/fenster.rs:84
+msgid "_Report a Bug"
+msgstr ""
+
+#: src/fenster.rs:87
 msgid "_About"
 msgstr ""
 
-#: src/fenster.rs:63
+#: src/fenster.rs:90
 msgid "_Calculator"
 msgstr ""
 
-#: src/fenster.rs:64
+#: src/fenster.rs:91
 msgid "_Help"
 msgstr ""
 
-#: src/fenster.rs:119
+#: src/fenster.rs:146
 msgid "Clear memory"
 msgstr ""
 
-#: src/fenster.rs:120
+#: src/fenster.rs:147
 msgid "Recall memory"
 msgstr ""
 
-#: src/fenster.rs:121
+#: src/fenster.rs:148
 msgid "Subtract from memory"
 msgstr ""
 
-#: src/fenster.rs:122
+#: src/fenster.rs:149
 msgid "Add to memory"
 msgstr ""
 
-#: src/fenster.rs:123
+#: src/fenster.rs:150
 msgid "Delete the last character (Backspace)"
 msgstr ""
 
-#: src/fenster.rs:124
+#: src/fenster.rs:151
 msgid "Clear the current number (Delete)"
 msgstr ""
 
-#: src/fenster.rs:125
+#: src/fenster.rs:152
 msgid "Clear everything (Escape)"
 msgstr ""
 
-#: src/fenster.rs:126
+#: src/fenster.rs:153
 msgid "Square root (s)"
 msgstr ""
 
-#: src/fenster.rs:127
+#: src/fenster.rs:154
 msgid "Square (q)"
 msgstr ""
 
-#: src/fenster.rs:128
+#: src/fenster.rs:155
 msgid "Reciprocal 1/x (r)"
 msgstr ""
 
-#: src/fenster.rs:129
+#: src/fenster.rs:156
 msgid "Change sign (v)"
 msgstr ""
 
-#: src/fenster.rs:130
+#: src/fenster.rs:157
 msgid "Percent"
 msgstr ""
 
-#: src/fenster.rs:131
+#: src/fenster.rs:158
 msgid "Calculate (Enter)"
 msgstr ""
 

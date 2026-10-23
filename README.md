@@ -43,8 +43,8 @@ Anwendungskennung (App-ID): `org.querencia.Rechner` · Binary:
 
 | | |
 |---|---|
-| Version | 0.1.5 (Tag `rechner/0.1.5`; dunkle Darstellung seit 0.1.4, hell lesbare Speichermarke) |
-| Letzte Prüfung | 21.10.2026: fmt und Clippy sauber, 37 Unit-Tests, Sprache Deutsch und Englisch; isolierte GUI-Prüfung hell und dunkel (1024×768, 1920×1080), Wechsel hell/dunkel 48 Fälle, Kontrast dunkel 112 Paare WCAG AA |
+| Version | 0.1.6 (Tag `rechner/0.1.6`; Info-Dialog mit Alpha-Hinweis, Website, Copyright und Lizenz, Hilfe-Menü mit Online-Hilfe und „Fehler melden“); seit 0.1.4 dunkle Darstellung, seit 0.1.5 hell lesbare Speichermarke |
+| Letzte Prüfung | 22.10.2026 (0.1.6): fmt und Clippy sauber, 38 Unit-Tests, Sprache Deutsch und Englisch; isolierte GUI-Prüfung de/en 1024×768, hell und dunkel: Online-Hilfe, „Fehler melden“ und Info-Dialog. 21.10.2026 (0.1.5): isoliert hell und dunkel (1024×768, 1920×1080), Wechsel hell/dunkel 48 Fälle, Kontrast dunkel 112 Paare WCAG AA |
 | Bekannte Lücken | siehe „Zweck“ (nur einfacher Modus) |
 | Getestet auf | Ubuntu 26.04, labwc 0.9.8, GTK 4.22, Rust 1.93 |
 | Nicht getestet | andere Distributionen, HiDPI, Mehrmonitor |
