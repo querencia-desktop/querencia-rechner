@@ -1,5 +1,26 @@
 # Änderungen
 
+## 0.1.7 – 2026-10-26
+
+Italienisch, Spanisch, Französisch:
+
+- Neue Kataloge `po/it.po`, `po/es.po`, `po/fr.po` (je 36 Texte, vollständig):
+  Menüs, Tooltips, Fenstertitel, Info-Dialog, Fehlertexte der Anzeige und
+  Desktop-Datei (`Name[it]=Calcolatrice`, `Name[es]=Calculadora`,
+  `Name[fr]=Calculatrice`). Begriffe nach der gemeinsamen Querencia-Begriffstabelle
+  (GNOME-Wortschatz der jeweiligen Sprache). „Online-Hilfe“ öffnet
+  querencialinux.org/it|es|fr/docs/.
+- Die Fehlertexte sind so knapp, dass das Fenster bei keinem Fehler breiter
+  wird (höchstens 23 Zeichen).
+- Prüfwerkzeug: `szenario-sprache.sh` kennt it/es/fr und zeigt alle Fehlertexte;
+  `szenario.sh` öffnet den Info-Dialog über die Zugriffstaste statt über den
+  ersten Eintrag des Hilfe-Menüs (seit 0.1.6 „Online-Hilfe“, öffnete in der
+  Prüfung einen Browser). `gui-pruefung.sh` startet die isolierte Sitzung mit
+  bereinigter Umgebung (`env -i`, eigenes HOME, `GIO_USE_VFS=local`), leitet
+  http(s) auf ein Schein-Programm um und nimmt mit `QR_AUSGABE` einen anderen
+  Ergebnisordner.
+- Sonst keine Änderung: Deutsch, Englisch, Rechnen, Farben und Symbol wie 0.1.6.
+
 ## 0.1.6 – 2026-10-22
 
 Info-Dialog und Hilfe-Menü wie in den übrigen Querencia-Programmen:

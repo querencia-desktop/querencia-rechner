@@ -1,6 +1,6 @@
 [package]
 name = "querencia-rechner"
-version = "0.1.6"
+version = "0.1.7"
 edition = "2024"
 rust-version = "1.92"
 description = "Querencia Rechner: klassischer Taschenrechner für Querencia Desktop"

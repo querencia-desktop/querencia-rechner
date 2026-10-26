@@ -43,8 +43,8 @@ Anwendungskennung (App-ID): `org.querencia.Rechner` · Binary:
 
 | | |
 |---|---|
-| Version | 0.1.6 (Tag `rechner/0.1.6`; Info-Dialog mit Alpha-Hinweis, Website, Copyright und Lizenz, Hilfe-Menü mit Online-Hilfe und „Fehler melden“); seit 0.1.4 dunkle Darstellung, seit 0.1.5 hell lesbare Speichermarke |
-| Letzte Prüfung | 22.10.2026 (0.1.6): fmt und Clippy sauber, 38 Unit-Tests, Sprache Deutsch und Englisch; isolierte GUI-Prüfung de/en 1024×768, hell und dunkel: Online-Hilfe, „Fehler melden“ und Info-Dialog. 21.10.2026 (0.1.5): isoliert hell und dunkel (1024×768, 1920×1080), Wechsel hell/dunkel 48 Fälle, Kontrast dunkel 112 Paare WCAG AA |
+| Version | 0.1.7 (Tag `rechner/0.1.7`; Italienisch, Spanisch, Französisch); seit 0.1.6 Info-Dialog mit Alpha-Hinweis, Website, Copyright und Lizenz, Hilfe-Menü mit Online-Hilfe und „Fehler melden“; seit 0.1.4 dunkle Darstellung, seit 0.1.5 hell lesbare Speichermarke |
+| Letzte Prüfung | 26.10.2026 (0.1.7): fmt und Clippy sauber, 38 Unit-Tests, `i18n.py pruefen` und `msgfmt --check` für de/es/fr/it; isolierte GUI-Prüfung 1024×768: Regression de 72 PASS, Sprache de/en/it/es/fr je 9 PASS (Menüs, Tooltip, Info-Dialog, Fehlertexte). 22.10.2026 (0.1.6): fmt und Clippy sauber, 38 Unit-Tests, Sprache Deutsch und Englisch; isolierte GUI-Prüfung de/en 1024×768, hell und dunkel: Online-Hilfe, „Fehler melden“ und Info-Dialog. 21.10.2026 (0.1.5): isoliert hell und dunkel (1024×768, 1920×1080), Wechsel hell/dunkel 48 Fälle, Kontrast dunkel 112 Paare WCAG AA |
 | Bekannte Lücken | siehe „Zweck“ (nur einfacher Modus) |
 | Getestet auf | Ubuntu 26.04, labwc 0.9.8, GTK 4.22, Rust 1.93 |
 | Nicht getestet | andere Distributionen, HiDPI, Mehrmonitor |
@@ -92,11 +92,12 @@ Fälle, Ablauf und Belege: [docs/testing.md](docs/testing.md). Arbeitsweise insg
 
 Seit 0.1.2 sind die Texte englisch im Code (msgid) und deutsch in
 `po/de.po` (GNU gettext, Muster Querencia Editor 0.2.0); der deutsche
-Wortlaut ist der bisherige. Übersetzt sind Menüs (nach gcalctool 5.30),
+Wortlaut ist der bisherige. Seit 0.1.7 gibt es dazu Italienisch
+(`po/it.po`), Spanisch (`po/es.po`) und Französisch (`po/fr.po`). Übersetzt sind Menüs (nach gcalctool 5.30),
 Tooltips, Fenstertitel, Info-Dialog, Fehlertexte der Anzeige und die
 Desktop-Datei (`data/org.querencia.Rechner.desktop.in` → `…desktop`). Die
-Sprache folgt `LANGUAGE`/`LANG`; ohne deutschen Katalog erscheint Englisch.
-Der Dezimaltrenner bleibt in beiden Sprachen das Komma.
+Sprache folgt `LANGUAGE`/`LANG`; ohne passenden Katalog erscheint Englisch.
+Der Dezimaltrenner bleibt in allen Sprachen das Komma.
 
 ## Vorbild und Abgrenzung
 

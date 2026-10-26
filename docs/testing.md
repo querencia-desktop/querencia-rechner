@@ -15,10 +15,18 @@ bash werkzeug/bauen.sh                        # einmalig: qeingabe, qausgabe
 bash werkzeug/gui-pruefung.sh 1024x768        # Release-Binary, sonst Debug
 bash werkzeug/gui-pruefung.sh 1920x1080
 QR_LANGUAGE=en bash werkzeug/gui-pruefung.sh 1024x768 <binary> szenario-sprache.sh
+QR_LANGUAGE=it_IT QR_AUSGABE=<ordner> bash werkzeug/gui-pruefung.sh 1024x768 <binary> szenario-sprache.sh
 ```
 
 Die Prüfung läuft wie die Sitzung mit `LANG=en_US.UTF-8` und `LANGUAGE=de`
-(`QR_LANGUAGE=en` für Englisch). Ab 0.1.2 braucht die geprüfte Binary den
+(`QR_LANGUAGE=en` für Englisch, `it_IT`, `es_ES`, `fr_FR` für Italienisch,
+Spanisch, Französisch; `QR_AUSGABE` legt die Ergebnisse in einen anderen
+Ordner statt `nachweis/gui/<Auflösung>/`). Die isolierte Sitzung startet mit
+bereinigter Umgebung (`env -i`, HOME im Profil, `GIO_USE_VFS=local`); http(s)
+öffnet dort kein Browser, sondern ein Schein-Programm, das die Adresse in
+`browser-aufrufe.txt` schreibt. `szenario-sprache.sh` prüft Fehlertext,
+Tooltip, Menüs und Info-Dialog der Sprache und fotografiert die längsten
+Fehlertexte (Überlauf, Wurzel aus negativer Zahl). Ab 0.1.2 braucht die geprüfte Binary den
 Katalog in `<Ordner der Binary>/share/locale`, sonst ist sie englisch und die
 deutschen Anzeigeprüfungen (z. B. „Division durch Null“) scheitern.
 

@@ -247,11 +247,12 @@ fi
 q "key Escape" "wait 300"
 
 # ---------------------------------------------- Info-Dialog mit Fokus
-read -r MX MY < <(menue_mitte 1); read -r EX EY < <(menue_eintrag1 1)
+read -r MX MY < <(menue_mitte 1)
 if [ -n "${MX:-}" ]; then
     q "move $((OX + MX)) $((OY + MY))" "click" "wait 1000"
     shot "12-menue-hilfe"
-    q "move $((OX + EX)) $((OY + EY))" "wait 300" "click" "wait 1200"
+    # Info per Zugriffstaste: seit 0.1.6 ist der erste Eintrag Online-Hilfe
+    q "key i" "wait 1200"
     shot "13-info-dialog"
     running && ok "Info-Dialog geöffnet (Bild 13)" || nok "Absturz beim Öffnen des Info-Dialogs"
     # Schließen-Knopf hat den Fokus: Eingabetaste schließt; danach Tasten im Hauptfenster
@@ -261,13 +262,13 @@ if [ -n "${MX:-}" ]; then
     else nok "Info-Dialog schließen per Eingabetaste / Folgetasten"; fi
     shot "14-nach-info"
     # Zweiter Durchgang mit Escape
-    q "move $((OX + MX)) $((OY + MY))" "click" "wait 900" "move $((OX + EX)) $((OY + EY))" "wait 300" "click" "wait 1000"
+    q "move $((OX + MX)) $((OY + MY))" "click" "wait 900" "key i" "wait 1000"
     q "key Escape" "wait 800" "type 2+2=" "wait 400"
     sleep 0.5
     if running && erwartet "2 + 2 =" "4"; then ok "Info-Dialog per Escape geschlossen, danach Tastatur ohne Absturz"
     else nok "Info-Dialog schließen per Escape / Folgetasten"; fi
     # Dritter Durchgang: Schließen-Knopf per Maus (Fokus bleibt im Dialog bis zum Klick)
-    q "move $((OX + MX)) $((OY + MY))" "click" "wait 900" "move $((OX + EX)) $((OY + EY))" "wait 300" "click" "wait 1000"
+    q "move $((OX + MX)) $((OY + MY))" "click" "wait 900" "key i" "wait 1000"
     shot "15-info-dialog-2"
     q "chord alt s" "wait 800" "type 3+3=" "wait 400"
     sleep 0.5

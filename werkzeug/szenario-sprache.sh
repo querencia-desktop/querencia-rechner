@@ -1,5 +1,5 @@
 #!/bin/bash
-# Läuft IN der isolierten labwc-Sitzung (isoliert.py). Sprache von Querencia Rechner 0.1.2 (G2-AH): Fehlertext, Menüs, Info-Dialog, Tooltip in LANGUAGE (de oder en, gui-pruefung.sh QR_LANGUAGE), Katalog in /proc/<pid>/maps. Kopf wie szenario.sh; prüft Querencia Rechner
+# Läuft IN der isolierten labwc-Sitzung (isoliert.py). Sprache von Querencia Rechner 0.1.2 (G2-AH, ab 0.1.7 auch it/es/fr): Fehlertext, Menüs, Info-Dialog, Tooltip in LANGUAGE (de, en, it, es, fr; gui-pruefung.sh QR_LANGUAGE), Katalog in /proc/<pid>/maps. Kopf wie szenario.sh; prüft Querencia Rechner
 # mit virtuellen Eingaben (Maus und Tastatur) und Bildschirmfotos; die
 # Anzeige wird aus der Debug-Ausgabe des Programms (QUERENCIA_RECHNER_DEBUG)
 # gelesen, nicht aus den Bildern.
@@ -77,15 +77,19 @@ klick() { # klick <Taste> [<Taste> …] – Maus auf die Taste und klicken
 }
 
 SPRACHE=${LANGUAGE%%:*}
+SPRACHE=${SPRACHE%%_*}
 case $SPRACHE in
-de) FEHLER="Division durch Null"; SCHLIESSEN=s ;;
-*) FEHLER="Division by zero"; SCHLIESSEN=c ;;
+de) FEHLER="Division durch Null"; SCHLIESSEN=s; INFO=i ;;
+it) FEHLER="Divisione per zero"; SCHLIESSEN=c; INFO=i ;;
+es) FEHLER="División por cero"; SCHLIESSEN=c; INFO=a ;;
+fr) FEHLER="Division par zéro"; SCHLIESSEN=f; INFO=p ;;
+*) FEHLER="Division by zero"; SCHLIESSEN=c; INFO=a ;;
 esac
 echo "INFO LANG=$LANG LANGUAGE=$LANGUAGE" >>"$E"
 KAT=$(grep -o '[^ ]*querencia-rechner.mo' "/proc/$PID/maps" | head -1)
 echo "INFO Katalog: ${KAT:-keiner}" >>"$E"
 case $SPRACHE in
-de) [ -n "$KAT" ] && ok "de: Katalog eingeblendet" || nok "de: kein Katalog eingeblendet" ;;
+de|it|es|fr) [ -n "$KAT" ] && ok "$SPRACHE: Katalog eingeblendet" || nok "$SPRACHE: kein Katalog eingeblendet" ;;
 *) [ -z "$KAT" ] && ok "$SPRACHE: kein Katalog eingeblendet" || nok "$SPRACHE: Katalog eingeblendet" ;;
 esac
 grep -q "^menue" "$LOG" && ok "Menüleiste gemeldet" || nok "keine Menüleiste"
@@ -94,6 +98,16 @@ grep -q "^menue" "$LOG" && ok "Menüleiste gemeldet" || nok "keine Menüleiste"
 q "key Escape" "type 5/0=" "wait 400"
 pruefe "Fehlertext: $FEHLER" "5 ÷ 0" "$FEHLER"
 shot "s1-fehler-$SPRACHE"
+
+# Längste Fehlertexte (ab 0.1.7): Anzeige auf den Fotos prüfen (die Anzeige
+# kürzt zu lange Texte vorne mit drei Punkten)
+q "key Escape" "type 1000000000000qqqqq" "wait 400"; shot "s1b-ueberlauf-$SPRACHE"
+echo "INFO Anzeige Überlauf: $(anzeige)" >>"$E"
+q "key Escape" "type 4vs" "wait 400"; shot "s1c-wurzel-$SPRACHE"
+echo "INFO Anzeige Wurzel: $(anzeige)" >>"$E"
+q "key Escape" "type (1+2=" "wait 400"; shot "s1d-unvollstaendig-$SPRACHE"
+echo "INFO Anzeige unvollständig: $(anzeige)" >>"$E"
+q "key Escape" "wait 300"
 
 # Tooltip der Taste √
 read -r x y < <(mitte "√")
@@ -110,9 +124,11 @@ for i in 0 1; do
 done
 running && ok "Menüs geöffnet (Bilder s3)" || nok "Absturz beim Öffnen der Menüs"
 
-# Info-Dialog über Hilfe → erster Eintrag, schließen mit Alt+<Zugriffstaste der Sprache>
-read -r MX MY < <(menue_mitte 1); read -r EX EY < <(menue_eintrag1 1)
-q "move $((OX + MX)) $((OY + MY))" "click" "wait 1000" "move $((OX + EX)) $((OY + EY))" "wait 300" "click" "wait 1200"
+# Info-Dialog über Hilfe, Zugriffstaste von Info (seit 0.1.6 ist der erste
+# Eintrag Online-Hilfe, der den Browser öffnen würde), schließen mit
+# Alt+<Zugriffstaste der Sprache>
+read -r MX MY < <(menue_mitte 1)
+q "move $((OX + MX)) $((OY + MY))" "click" "wait 1000" "key $INFO" "wait 1200"
 shot "s4-info-$SPRACHE"
 q "chord alt $SCHLIESSEN" "wait 800" "type 3+3=" "wait 400"
 if running && erwartet "3 + 3 =" "6"; then ok "Info-Dialog per Alt+$SCHLIESSEN geschlossen ($SPRACHE), Tastatur danach im Hauptfenster"
