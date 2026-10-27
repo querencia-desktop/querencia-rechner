@@ -9,7 +9,8 @@ Anleitung auf <https://querencialinux.org>.
 
 *English summary:* A classic basic-mode calculator modelled on GNOME 2's
 gcalctool. Part of Querencia Desktop, a classic GNOME-2-style desktop for
-Wayland. Alpha software; documentation is in German.
+Wayland. Alpha software; user interface in German, English, Italian, Spanish
+and French; documentation is in German.
 
 > **Alpha.** Nur der einfache Modus ist da; wissenschaftlicher und
 > Programmierer-Modus fehlen. Keine Sicherheits- oder Datenverlustgarantie.
