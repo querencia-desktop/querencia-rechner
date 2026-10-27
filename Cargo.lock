@@ -576,7 +576,7 @@ dependencies = [
 
 [[package]]
 name = "querencia-rechner"
-version = "0.1.6"
+version = "0.1.7"
 dependencies = [
  "gettext-rs",
  "gtk4",

@@ -1,0 +1,182 @@
+# Querencia Rechner: italienische Übersetzung.
+# Copyright (C) 2026 Querencia Desktop contributors
+# Diese Datei steht unter derselben Lizenz wie Querencia Rechner (GPL-3.0-or-later).
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: querencia-rechner\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2026-10-26 22:39+0100\n"
+"Last-Translator: Querencia Desktop contributors\n"
+"Language-Team: Italiano (Querencia)\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. TRANSLATORS: Desktop-Datei, Schlüssel Name
+#. TRANSLATORS: Desktop-Datei, Schlüssel GenericName
+#. TRANSLATORS: Fenstertitel wie gcalctool („Calculator“).
+#: data/org.querencia.Rechner.desktop.in:10 data/org.querencia.Rechner.desktop.in:11 src/fenster.rs:196
+msgid "Calculator"
+msgstr "Calcolatrice"
+
+#. TRANSLATORS: Desktop-Datei, Schlüssel Comment
+#: data/org.querencia.Rechner.desktop.in:12
+msgid "Perform arithmetic calculations"
+msgstr "Esegue calcoli aritmetici"
+
+#. TRANSLATORS: Desktop-Datei, Schlüssel Keywords (Liste, Einträge mit ; trennen und abschließen)
+#: data/org.querencia.Rechner.desktop.in:18
+msgid "calculator;calc;"
+msgstr "calcolatrice;calcolo;calcolatore;"
+
+#. TRANSLATORS: Adresse der Online-Hilfe; nur das Sprachkürzel anpassen (deutsch …/de/docs/).
+#: src/dialoge.rs:92
+msgid "https://querencialinux.org/en/docs/"
+msgstr "https://querencialinux.org/it/docs/"
+
+#. TRANSLATORS: Fenstertitel des Info-Dialogs; deutsch mit dem Eigennamen „Querencia Rechner“, englisch mit dem Namen aus dem Menü.
+#: src/dialoge.rs:109
+msgid "About Calculator"
+msgstr "Informazioni su Calcolatrice"
+
+#. TRANSLATORS: Programmname und Version im Info-Dialog; deutsch „Querencia Rechner {version}“.
+#: src/dialoge.rs:120
+#, no-c-format
+msgid "Calculator {version}"
+msgstr "Calcolatrice {version}"
+
+#: src/dialoge.rs:128
+msgid ""
+"Classic calculator for Querencia Desktop\n"
+"modelled on gcalctool (GNOME 2.30).\n"
+"\n"
+"Basic arithmetic, parentheses, percent, square root,\n"
+"square, reciprocal and memory."
+msgstr ""
+"Calcolatrice classica per Querencia Desktop\n"
+"sul modello di gcalctool (GNOME 2.30).\n"
+"\n"
+"Quattro operazioni, parentesi, percentuale, radice quadrata,\n"
+"quadrato, reciproco e memoria."
+
+#: src/dialoge.rs:135
+msgid "Alpha – not released for everyday use."
+msgstr "Alpha – non ancora pronta per l’uso quotidiano."
+
+#: src/dialoge.rs:155
+msgid "License: GPL-3.0-or-later"
+msgstr "Licenza: GPL-3.0-or-later"
+
+#: src/dialoge.rs:164
+msgid "_Close"
+msgstr "_Chiudi"
+
+#. TRANSLATORS: Menüs nach gcalctool 5.30; Zugriffstasten je Menü und in der Menüleiste verschieden halten.
+#: src/fenster.rs:73
+msgid "_Copy"
+msgstr "_Copia"
+
+#: src/fenster.rs:74
+msgid "_Paste"
+msgstr "I_ncolla"
+
+#: src/fenster.rs:77
+msgid "_Quit"
+msgstr "_Esci"
+
+#. TRANSLATORS: Hilfe-Menü; Online-Hilfe und Fehlermeldung öffnen der Browser. Zugriffstasten im Menü verschieden halten.
+#: src/fenster.rs:83
+msgid "Online _Help"
+msgstr "Aiuto in _linea"
+
+#: src/fenster.rs:84
+msgid "_Report a Bug"
+msgstr "_Segnala un problema"
+
+#: src/fenster.rs:87
+msgid "_About"
+msgstr "_Informazioni"
+
+#: src/fenster.rs:90
+msgid "_Calculator"
+msgstr "_Calcolatrice"
+
+#: src/fenster.rs:91
+msgid "_Help"
+msgstr "A_iuto"
+
+#: src/fenster.rs:146
+msgid "Clear memory"
+msgstr "Cancella la memoria"
+
+#: src/fenster.rs:147
+msgid "Recall memory"
+msgstr "Richiama la memoria"
+
+#: src/fenster.rs:148
+msgid "Subtract from memory"
+msgstr "Sottrai dalla memoria"
+
+#: src/fenster.rs:149
+msgid "Add to memory"
+msgstr "Aggiungi alla memoria"
+
+#: src/fenster.rs:150
+msgid "Delete the last character (Backspace)"
+msgstr "Cancella l’ultimo carattere (Backspace)"
+
+#: src/fenster.rs:151
+msgid "Clear the current number (Delete)"
+msgstr "Cancella il numero corrente (Canc)"
+
+#: src/fenster.rs:152
+msgid "Clear everything (Escape)"
+msgstr "Cancella tutto (Esc)"
+
+#: src/fenster.rs:153
+msgid "Square root (s)"
+msgstr "Radice quadrata (s)"
+
+#: src/fenster.rs:154
+msgid "Square (q)"
+msgstr "Quadrato (q)"
+
+#: src/fenster.rs:155
+msgid "Reciprocal 1/x (r)"
+msgstr "Reciproco 1/x (r)"
+
+#: src/fenster.rs:156
+msgid "Change sign (v)"
+msgstr "Cambia segno (v)"
+
+#: src/fenster.rs:157
+msgid "Percent"
+msgstr "Percentuale"
+
+#: src/fenster.rs:158
+msgid "Calculate (Enter)"
+msgstr "Calcola (Invio)"
+
+#: src/rechenkern.rs:104
+msgid "Division by zero"
+msgstr "Divisione per zero"
+
+#: src/rechenkern.rs:105
+msgid "Overflow"
+msgstr "Overflow"
+
+#: src/rechenkern.rs:106
+msgid "Square root of a negative number"
+msgstr "Radice di un negativo"
+
+#: src/rechenkern.rs:107
+msgid "Incomplete expression"
+msgstr "Espressione incompleta"
+
+#: src/rechenkern.rs:108
+msgid "Invalid expression"
+msgstr "Espressione non valida"
